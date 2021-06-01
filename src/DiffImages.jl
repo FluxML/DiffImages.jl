@@ -1,5 +1,11 @@
 module DiffImages
 
-greet() = print("Hello World!")
+using Flux,
+      Images,
+      Zygote,
+      CUDA
+
+using Flux:@functor
+include("conversions.jl")
 
 end # module
