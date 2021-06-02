@@ -1,4 +1,7 @@
 """
+    channelify!(m::AbstractArray{<:Color})
+Channelify function.
+
 Input should be in _WHCN_ order _(*, batch)_.
 Output will be in the order _(*, 1, batch)_.
 """
@@ -13,7 +16,10 @@ function channelify!(m::AbstractArray{T}) where T<:Color
 end
 
 """
-Expecting an input of the type _(*, channels, batch)_.
+    colorify!(color::Type{<:Color}, m::AbstractArray{T}) where T
+Colorify function.
+
+Expecting an input of the type ``\textit{(*, channels, batch)}``.
 Converts the array to the `color` specified.
 
 # Examples
