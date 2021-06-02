@@ -5,7 +5,7 @@ using Flux,
       Zygote,
       CUDA
 
-using Flux:@functor
+using Flux:@functor, unsqueeze
 include("conversions.jl")
 
 end # module
