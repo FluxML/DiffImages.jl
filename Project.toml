@@ -4,6 +4,7 @@ authors = ["SomTambe <tambesom@gmail.com>"]
 version = "0.1.0"
 
 [deps]
+ChainRules = "082447d4-558c-5d27-93f4-14fc19e9eca2"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ImageTransformations = "02fcd773-0e25-5acc-982a-7f6622650795"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
