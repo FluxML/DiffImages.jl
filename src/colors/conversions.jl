@@ -2,8 +2,12 @@
     channelify(m::AbstractArray{<:Color})
 Channelify function.
 
-Input should be in ``WHCN`` order ``\\implies (*, batch)``.
+Input should be in ``WHN`` order ``\\implies (*, batch)``.
 Output will be in the order ``(*, channels, batch)``.
+
+Since we require the last dimension to be the batch dimension, 
+kindly unsqueeze the last dimension if you would like to pass a
+single image.
 """
 function channelify(m::AbstractArray{T}) where T <: Color
     m = channelview(m)
@@ -21,6 +25,10 @@ Colorify function.
 
 Expecting an input of the type ``(*, channels, batch)``.
 Converts the array to the `color` specified.
+
+Since we require the last dimension to be the batch dimension, 
+kindly unsqueeze the last dimension if you would like to pass a
+single image.
 
 # Examples
 ```jldoctest; setup = :(using Images)
