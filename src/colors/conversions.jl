@@ -11,7 +11,7 @@ single image.
 """
 function channelify(m::AbstractArray{T}) where T <: Color
     m = channelview(m)
-    t = collect(1:ndims(m))
+    t = ntuple(i->i, ndims(m))
     if T <: AbstractGray
         m = unsqueeze(m, t[end-1])
     end
@@ -41,7 +41,7 @@ true
 ```
 """
 function colorify(color::Type{<:Color}, m::AbstractArray)
-    t = collect(1:ndims(m))
+    t = ntuple(i->i, ndims(m))
     m = permutedims(m, (t[end-1],t[1:end-2]...,t[end]))
     if color <: AbstractGray
         m = dropdims(m; dims=1)
