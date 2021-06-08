@@ -7,11 +7,12 @@ Output will be in the order ``(*, channels, batch)``.
 
 """
 function channelify(m::AbstractArray{T}) where T <: Color
+    e = eltype(m)
     m = channelview(m)
-    t = ntuple(i->i, ndims(m))
-    if T <: AbstractGray
-        m = unsqueeze(m, t[end-1])
+    if e <: AbstractGray
+        m = unsqueeze(m, 1)
     end
+    t = ntuple(i->i, ndims(m))
     m = permutedims(m, (t[2:end-1]...,1,t[end]))
     return m
 end
