@@ -11,4 +11,3 @@ using Test,
         include("colors/conversions.jl")
     end
 end
-
