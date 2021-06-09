@@ -17,6 +17,16 @@ function channelify(m::AbstractArray{T}) where T <: Color
     return m
 end
 
+# adjoint for channelify
+function ChainRulesCore.rrule(::typeof(channelify), X)
+    e = eltype(X)
+    Y = channelify(X)
+    function pullback(ȳ)
+        return NoTangent(), colorify(e, ȳ)
+    end
+    return Y, pullback
+end
+
 """
     colorify(color::Type{<:Color}, m::AbstractArray)
 Colorify function.

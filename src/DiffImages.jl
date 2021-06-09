@@ -7,7 +7,7 @@ using Flux,
 
 using Flux:@functor, unsqueeze
 using ImageTransformations
-using ChainRules:rrule
+using ChainRules, ChainRulesCore
 
 export colorify, channelify
 include("colors/conversions.jl")
