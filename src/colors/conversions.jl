@@ -6,19 +6,19 @@ Input should be in ``WHN`` order ``\\implies (*, batch)``.
 Output will be in the order ``(*, channels, batch)``.
 
 """
-function channelify(m::AbstractArray{T}) where T <: Color
+function channelify(m::AbstractArray{T,N}) where {T <: Color, N}
     e = eltype(m)
     m = channelview(m)
     if e <: AbstractGray
         m = unsqueeze(m, 1)
     end
-    t = ntuple(i->i, ndims(m))
+    t = ntuple(identity, ndims(m))
     m = permutedims(m, (t[2:end-1]...,1,t[end]))
     return m
 end
 
 #adjoint for channelview
-Zygote.@adjoint channelview(x) = begin
+@adjoint function channelview(x::AbstractArray{T,N}) where {T, N}
     e = eltype(x)
     y = channelview(x)
     function pullback(Δ)
@@ -28,7 +28,7 @@ Zygote.@adjoint channelview(x) = begin
 end
 
 # adjoint for colorview
-Zygote.@adjoint colorview(T,x) = begin
+@adjoint function colorview(T, x) where {T}
     y = colorview(T,x)
     function pullback(Δ)
         return (nothing, channelview(Δ))
@@ -51,7 +51,7 @@ for f in (:HSV,:AHSV,:HSVA,
           :DIN99,:ADIN99,:DIN99A,
           :LMS,:ALMS,:LMSA,
           :YIQ,:AYIQ,:YIQA)
-    @eval Zygote.@adjoint $f(x...) = begin
+    @eval @adjoint function $f(x...)
         y = $f(x...)
         function pullback(Δ)
             return (Δ,)
@@ -79,7 +79,8 @@ true
 ```
 """
 function colorify(color::Type{<:Color}, m::AbstractArray)
-    t = ntuple(i->i, ndims(m))
+    t = ntuple(identity, ndims(m))
+    @show t size(m) (t[end-1],t[1:end-2]...,t[end])
     m = permutedims(m, (t[end-1],t[1:end-2]...,t[end]))
     if color <: AbstractGray
         m = dropdims(m; dims=1)

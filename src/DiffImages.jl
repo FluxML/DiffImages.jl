@@ -6,7 +6,7 @@ using Flux,
       ChainRules,
       ImageTransformations
 
-using Flux:@functor, unsqueeze
+using Flux:@adjoint, @functor, unsqueeze
 using ChainRules:NoTangent
 
 export colorify, channelify
