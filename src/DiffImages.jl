@@ -3,11 +3,11 @@ module DiffImages
 using Flux,
       Images,
       Zygote,
-      ChainRules
+      ChainRules,
+      ImageTransformations
 
 using Flux:@functor, unsqueeze
-using ImageTransformations
-using ChainRules, ChainRulesCore
+using ChainRules:NoTangent
 
 export colorify, channelify
 include("colors/conversions.jl")

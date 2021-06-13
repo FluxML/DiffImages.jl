@@ -17,14 +17,47 @@ function channelify(m::AbstractArray{T}) where T <: Color
     return m
 end
 
-# adjoint for channelify
-function ChainRulesCore.rrule(::typeof(channelify), X)
-    e = eltype(X)
-    Y = channelify(X)
-    function pullback(ȳ)
-        return NoTangent(), colorify(e, ȳ)
+#adjoint for channelview
+Zygote.@adjoint channelview(x) = begin
+    e = eltype(x)
+    y = channelview(x)
+    function pullback(Δ)
+        return (colorview(e,Δ),)
     end
-    return Y, pullback
+    return (y, pullback)
+end
+
+# adjoint for colorview
+Zygote.@adjoint colorview(T,x) = begin
+    y = colorview(T,x)
+    function pullback(Δ)
+        return (nothing, channelview(Δ))
+    end
+    return (y, pullback)
+end
+
+# adjoint for (::Colorant{T,N})(x)
+for f in (:HSV,:AHSV,:HSVA,
+          :Gray,:AGray,:GrayA,
+          :HSL,:AHSL,:HSLA,
+          :RGB,:ARGB,:RGBA,
+          :BGR,:ABGR,:BGRA,
+          :XYZ,:AXYZ,:XYZA,
+          :xyY,:AxyY,:xyYA,
+          :Lab,:ALab,:LabA,
+          :Luv,:ALuv,:LuvA,
+          :LCHab,:ALCHab,:LCHabA,
+          :LCHuv,:ALCHuv,:LCHuvA,
+          :DIN99,:ADIN99,:DIN99A,
+          :LMS,:ALMS,:LMSA,
+          :YIQ,:AYIQ,:YIQA)
+    @eval Zygote.@adjoint $f(x...) = begin
+        y = $f(x...)
+        function pullback(Δ)
+            return (Δ,)
+        end
+        return (y, pullback)
+    end
 end
 
 """
