@@ -6,7 +6,7 @@ Input should be in ``WHN`` order ``\\implies (*, batch)``.
 Output will be in the order ``(*, channels, batch)``.
 
 """
-function channelify(m::AbstractArray{T,N}) where {T <: Color, N}
+function channelify(m::AbstractArray{CT,N}) where {CT <: Colorant, N}
     e = eltype(m)
     m = channelview(m)
     if e <: AbstractGray
@@ -28,7 +28,7 @@ end
 end
 
 # adjoint for colorview
-@adjoint function colorview(T, x) where {T}
+@adjoint function colorview(T, x)
     y = colorview(T,x)
     function pullback(Δ)
         return (nothing, channelview(Δ))
@@ -53,10 +53,10 @@ for f in (:HSV,:AHSV,:HSVA,
           :YIQ,:AYIQ,:YIQA)
     @eval @adjoint function $f(x...)
         y = $f(x...)
-        function pullback(Δ)
-            return (Δ,)
+        function pull(Δ...)
+            return (Δ...,)
         end
-        return (y, pullback)
+        return (y, pull)
     end
 end
 
