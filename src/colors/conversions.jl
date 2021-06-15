@@ -98,7 +98,6 @@ true
 """
 function colorify(color::Type{<:Color}, m::AbstractArray)
     t = ntuple(identity, ndims(m))
-    @show t size(m) (t[end-1],t[1:end-2]...,t[end])
     m = permutedims(m, (t[end-1],t[1:end-2]...,t[end]))
     if color <: AbstractGray
         m = dropdims(m; dims=1)
