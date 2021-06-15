@@ -5,6 +5,14 @@ Channelify function.
 Input should be in ``WHN`` order ``\\implies (*, batch)``.
 Output will be in the order ``(*, channels, batch)``.
 
+# Examples
+```jldoctest; setup = :(using Images)
+julia> img = rand(BGR,25,25,2) # Generate 2 images in the BGR colorspace format
+
+julia> out = HSV.(img)
+
+julia> size(channelify(out))
+```
 """
 function channelify(m::AbstractArray{CT,N}) where {CT <: Colorant, N}
     e = eltype(m)
@@ -22,7 +30,7 @@ end
     e = eltype(x)
     y = channelview(x)
     function pullback(Δ)
-        return (colorview(e,Δ),)
+        return (collect(colorview(e,Δ)),)
     end
     return (y, pullback)
 end
@@ -51,14 +59,24 @@ for f in (:HSV,:AHSV,:HSVA,
           :DIN99,:ADIN99,:DIN99A,
           :LMS,:ALMS,:LMSA,
           :YIQ,:AYIQ,:YIQA)
-    @eval @adjoint function $f(x...)
-        y = $f(x...)
+    @eval @adjoint function $f(x::Real...)
+        y = $f(x::Real...)
         function pull(Δ...)
             return (Δ...,)
         end
         return (y, pull)
     end
 end
+
+# Constructor adjoint
+# function ChainRules.rrule(::Type{HSL{T}}, x, y, z) where T <: AbstractFloat
+#     β = HSV{T}(x, y, z)
+#     function Lab_pullback(Δ)
+#         @show Δ x y z β
+#         return (ChainRules.NoTangent(),Δ.h,Δ.s,Δ.l)
+#     end
+#     return (β, Lab_pullback)
+# end
 
 """
     colorify(color::Type{<:Color}, m::AbstractArray)
