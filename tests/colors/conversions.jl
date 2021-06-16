@@ -19,6 +19,10 @@
     #           Dense(16,10),
     #           x->σ.(x))
     ds = (7,7,5)
+    ds4 = (7,7,4,5)
+    ds3 = (7,7,3,5)
+    ds2 = (7,7,2,5)
+    ds1 = (7,7,1,5)
     working_cspaces = (YIQ,
                        LCHab,
                        Lab, 
@@ -60,8 +64,62 @@
             end
         end
     end
-    # @testset "Testing colorify" begin
-    #     @test size(g_3(rand(20,20,7,3))) == (10,3)
-    #     @test size(g_1(rand(20,20,7,3))) == (10,3)
-    # end
+    @testset "Testing colorify" begin
+        for cs in cspaces
+            if cs ∈ (BGRA,ABGR,
+                     RGBA,ARGB,
+                     AHSL,HSLA,
+                     AHSV,HSVA,
+                     AXYZ,XYZA,
+                     AxyY,xyYA,
+                     ALab,LabA,
+                     ALuv,LuvA,
+                     ALCHab,LCHabA,
+                     ALCHuv,LCHuvA,
+                     ADIN99,DIN99A,
+                     ALMS,LMSA,
+                     AYIQ,YIQA) # all 4 channel colorspaces
+                i = rand(ds4...)
+                @test size(colorify(cs,i)) == (ds4[1:end-2]...,ds4[end])
+            elseif cs ∈ (AGray,GrayA)
+                i = rand(ds2...)
+                @test size(colorify(cs,i)) == (ds4[1:end-2]...,ds4[end])
+            elseif cs ∈ (Gray,)
+                i = rand(ds1...)
+                @test size(colorify(cs,i)) == (ds4[1:end-2]...,ds4[end])
+            else
+                i = rand(ds3...)
+                @test size(colorify(cs,i)) == (ds4[1:end-2]...,ds4[end])
+            end
+        end
+    end
+    @testset "Testing reversibilty" begin
+        for cs in cspaces
+            if cs ∈ (BGRA,ABGR,
+                     RGBA,ARGB,
+                     AHSL,HSLA,
+                     AHSV,HSVA,
+                     AXYZ,XYZA,
+                     AxyY,xyYA,
+                     ALab,LabA,
+                     ALuv,LuvA,
+                     ALCHab,LCHabA,
+                     ALCHuv,LCHuvA,
+                     ADIN99,DIN99A,
+                     ALMS,LMSA,
+                     AYIQ,YIQA) # all 4 channel colorspaces
+                i = rand(ds4...)
+                @test channelify(colorify(cs,i)) == i
+            elseif cs ∈ (AGray,GrayA)
+                i = rand(ds2...)
+                @test channelify(colorify(cs,i)) == i
+            elseif cs ∈ (Gray,)
+                i = rand(ds1...)
+                @test channelify(colorify(cs,i)) == i
+            else
+                i = rand(ds3...)
+                @test channelify(colorify(cs,i)) == i
+            end
+        end
+    end
 end
