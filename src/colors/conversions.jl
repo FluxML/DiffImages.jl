@@ -96,7 +96,7 @@ julia> channelify(colorify(RGB,img))==img
 true
 ```
 """
-function colorify(color::Type{<:Color}, m::AbstractArray)
+function colorify(color::Type{CT}, m::AbstractArray) where CT <: Colorant
     t = ntuple(identity, ndims(m))
     m = permutedims(m, (t[end-1],t[1:end-2]...,t[end]))
     if color <: AbstractGray
