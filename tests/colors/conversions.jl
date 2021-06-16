@@ -19,36 +19,36 @@
     #           Dense(16,10),
     #           x->σ.(x))
     ds = (7,7,5)
-    working_cspaces = (:YIQ,
-                       :LCHab,
-                       :Lab, 
-                       :BGRA,:ABGR,:BGR, 
-                       :RGBA,:ARGB,:RGB, 
-                       :HSL, 
-                       :AGray,:GrayA,:Gray, 
-                       :HSV) # colorspaces those have samplers defined for Base.Random
+    working_cspaces = (YIQ,
+                       LCHab,
+                       Lab, 
+                       BGRA,ABGR,BGR, 
+                       RGBA,ARGB,RGB, 
+                       HSL, 
+                       AGray,GrayA,Gray, 
+                       HSV) # colorspaces those have samplers defined for Base.Random
 
-    cspaces = (:HSV,:AHSV,:HSVA,
-               :Gray,:AGray,:GrayA,
-               :HSL,:AHSL,:HSLA,
-               :RGB,:ARGB,:RGBA,
-               :BGR,:ABGR,:BGRA,
-               :XYZ,:AXYZ,:XYZA,
-               :xyY,:AxyY,:xyYA,
-               :Lab,:ALab,:LabA,
-               :Luv,:ALuv,:LuvA,
-               :LCHab,:ALCHab,:LCHabA,
-               :LCHuv,:ALCHuv,:LCHuvA,
-               :DIN99,:ADIN99,:DIN99A,
-               :LMS,:ALMS,:LMSA,
-               :YIQ,:AYIQ,:YIQA) # tuple of all exprs of Colorspaces and their transparent variants
+    cspaces = (HSV,AHSV,HSVA,
+               Gray,AGray,GrayA,
+               HSL,AHSL,HSLA,
+               RGB,ARGB,RGBA,
+               BGR,ABGR,BGRA,
+               XYZ,AXYZ,XYZA,
+               xyY,AxyY,xyYA,
+               Lab,ALab,LabA,
+               Luv,ALuv,LuvA,
+               LCHab,ALCHab,LCHabA,
+               LCHuv,ALCHuv,LCHuvA,
+               DIN99,ADIN99,DIN99A,
+               LMS,ALMS,LMSA,
+               YIQ,AYIQ,YIQA) # tuple of all exprs of Colorspaces and their transparent variants
     i_2 = rand(BGR, 5, 3) # 2-dim input testing
     i_4 = rand(RGBA, 9, 9, 2) # 4-channel testing; RGBA chosen because Random sampler available
     @testset "Testing channelify" begin
         @test size(channelify(i_2)) == (5,3,3) # to check if 2-dim inputs are working. Currently no use of them.
         @test size(channelify(i_4)) == (9,9,4,2) # to check if 4 channel outputs are correct.
         for cs in working_cspaces
-            i = rand(eval(cs), ds...)
+            i = rand(cs, ds...)
             if cs ∈ (:Gray,)
                 @test size(channelify(i)) == (ds[1:end-1]...,1,ds[end])
             elseif cs ∈ (:AGray,:GrayA)
