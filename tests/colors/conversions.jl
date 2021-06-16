@@ -49,11 +49,11 @@
         @test size(channelify(i_4)) == (9,9,4,2) # to check if 4 channel outputs are correct.
         for cs in working_cspaces
             i = rand(cs, ds...)
-            if cs ∈ (:Gray,)
+            if cs ∈ (Gray,)
                 @test size(channelify(i)) == (ds[1:end-1]...,1,ds[end])
-            elseif cs ∈ (:AGray,:GrayA)
+            elseif cs ∈ (AGray,GrayA)
                 @test size(channelify(i)) == (ds[1:end-1]...,2,ds[end])
-            elseif cs ∈ (:BGRA,:ABGR,:RGBA,:ARGB)
+            elseif cs ∈ (BGRA,ABGR,RGBA,ARGB)
                 @test size(channelify(i)) == (ds[1:end-1]...,4,ds[end])
             else
                 @test size(channelify(i)) == (ds[1:end-1]...,3,ds[end])
