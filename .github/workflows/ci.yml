@@ -47,6 +47,8 @@ jobs:
             Pkg.instantiate()'
       - run: |
           julia --project=docs -e '
+            using Pkg
+            Pkg.add("Images")
             using Documenter: doctest
             using DiffImages, Images
             doctest(DiffImages)'
