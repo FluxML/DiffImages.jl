@@ -1,3 +1,4 @@
+using Test
 @testset "Colorspace transforms tests" begin
     # f = Chain(x->HSV.(x),channelify,flatten,Dense(768,16),Dense(16,10),x->σ.(x))
     # g_3 = Chain(Conv((3,3),7=>4,relu),
@@ -122,8 +123,8 @@
             end
         end
     end
-    # @testset "Testing Differentiability" begin
-    #     # channelify and colorify
+    @testset "Testing Differentiability" begin
+        # channelify and colorify
         
-    # end
+    end
 end
