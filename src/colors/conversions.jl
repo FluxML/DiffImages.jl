@@ -1,5 +1,5 @@
 """
-    channelify(m::AbstractArray{<:Color})
+    channelify(m::AbstractArray{CT,N}) where {CT <: Colorant, N}
 Channelify function.
 
 Input should be in ``WHN`` order ``\\implies (*, batch)``.
@@ -79,7 +79,7 @@ end
 # end
 
 """
-    colorify(color::Type{<:Color}, m::AbstractArray)
+    colorify(color::Type{CT}, m::AbstractArray) where CT <: Colorant
 Colorify function.
 
 Expecting an input of the type ``(*, channels, batch)``.
