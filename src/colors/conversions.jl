@@ -6,12 +6,12 @@ Input should be in ``WHN`` order ``\\implies (*, batch)``.
 Output will be in the order ``(*, channels, batch)``.
 
 # Examples
-```jldoctest; setup = :(using Images)
-julia> img = rand(BGR,25,25,2) # Generate 2 images in the BGR colorspace format
+```jldoctest; setup = :(using Images,DiffImages)
+julia> input_size = (16, 16, 2)
+(16, 16, 2)
 
-julia> out = HSV.(img)
-
-julia> size(channelify(out))
+julia> size(channelify(HSV.(rand(BGR,input_size...))))
+(16, 16, 3, 2)
 ```
 """
 function channelify(m::AbstractArray{CT,N}) where {CT <: Colorant, N}
@@ -44,7 +44,7 @@ end
     return (y, pullback)
 end
 
-# adjoint for (::Colorant{T,N})(x)
+# adjoint for (::Colorant{T,N})(x::Real)
 for f in (:HSV,:AHSV,:HSVA,
           :Gray,:AGray,:GrayA,
           :HSL,:AHSL,:HSLA,
@@ -70,7 +70,7 @@ end
 
 # Constructor adjoint
 # function ChainRules.rrule(::Type{HSL{T}}, x, y, z) where T <: AbstractFloat
-#     β = HSV{T}(x, y, z)
+#     β = HSL{T}(x, y, z)
 #     function Lab_pullback(Δ)
 #         @show Δ x y z β
 #         return (ChainRules.NoTangent(),Δ.h,Δ.s,Δ.l)
@@ -87,13 +87,12 @@ Converts the array to the `color` specified.
 
 
 # Examples
-```jldoctest; setup = :(using Images)
-julia> img = rand(25,25,3,7)
+```jldoctest; setup = :(using Images,DiffImages)
+julia> input_size = (25, 25, 3, 7)
+(25, 25, 3, 7)
 
-julia> colorify(HSV, img)
-
-julia> channelify(colorify(RGB,img))==img
-true
+julia> size(colorify(HSV, rand(input_size...)))
+(25, 25, 7)
 ```
 """
 function colorify(color::Type{CT}, m::AbstractArray) where CT <: Colorant
