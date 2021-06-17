@@ -122,4 +122,8 @@
             end
         end
     end
+    # @testset "Testing Differentiability" begin
+    #     # channelify and colorify
+        
+    # end
 end
