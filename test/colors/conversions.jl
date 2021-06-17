@@ -139,6 +139,7 @@
             end
         end
         # colorview
+        # colorview(T, gray1, gray2...) tests will have to be written.
         @testset "Testing colorview" begin
             for cs in cspaces
                 if cs ∈ (BGRA, ABGR,

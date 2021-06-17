@@ -105,3 +105,4 @@ function colorify(color::Type{CT}, m::AbstractArray) where CT <: Colorant
     m = colorview(color, m)
     return m
 end
+# colorview(T, gray1, gray2...) adjoints will be added in a PR later.
