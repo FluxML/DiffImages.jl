@@ -48,9 +48,8 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Pkg
-            Pkg.add("Images")
             using Documenter: doctest
-            using DiffImages, Images
+            using DiffImages
             doctest(DiffImages)'
       - run: julia --project=docs docs/make.jl  
         env:
