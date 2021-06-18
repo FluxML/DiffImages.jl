@@ -25,7 +25,6 @@ function channelify(m::AbstractArray{CT,N}) where {CT <: Colorant, N}
     return m
 end
 
-#adjoint for channelview
 @adjoint function channelview(x::AbstractArray{T,N}) where {T, N}
     e = eltype(x)
     y = channelview(x)
@@ -35,7 +34,6 @@ end
     return (y, pullback)
 end
 
-# adjoint for colorview
 @adjoint function colorview(T, x)
     y = colorview(T,x)
     function pullback(Δ)
@@ -104,4 +102,4 @@ function colorify(color::Type{CT}, m::AbstractArray) where CT <: Colorant
     m = colorview(color, m)
     return m
 end
-# colorview(T, gray1, gray2...) adjoints will be added in a PR later.
+# TODO: adjoints for `colorview(T, gray1, gray2...)` are not added yet.
