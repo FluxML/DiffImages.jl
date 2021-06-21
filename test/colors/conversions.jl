@@ -133,7 +133,7 @@ using Test, DiffImages, Zygote, Images
             end
         end
         # colorview
-        # colorview(T, gray1, gray2...) tests will have to be written.
+        # TODO: colorview(T, gray1, gray2...) tests will have to be written, after writing their adjoints.
         @testset "Testing colorview" begin
             for cs in cspaces_all
                 if cs ∈ cspaces_4
@@ -148,6 +148,39 @@ using Test, DiffImages, Zygote, Images
                 else
                     i = rand(ds3[end - 1], ds3[1:end - 2]..., ds3[end])
                     @test gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
+                end
+            end
+        end
+        # channelify
+        @testset "Testing channelify" begin
+            for cs in cspaces_with_random
+                i = rand(cs, ds...)
+                if cs ∈ (Gray,)
+                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 1, ds[end])
+                elseif cs ∈ (AGray, GrayA)
+                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 2, ds[end])
+                elseif cs ∈ (BGRA, ABGR, RGBA, ARGB)
+                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 4, ds[end])
+                else
+                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 3, ds[end])
+                end
+            end
+        end
+        # colorify
+        @testset "Testing colorify" begin
+            for cs in cspaces_all
+                if cs ∈ cspaces_4
+                    i = rand(ds4...)
+                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                elseif cs ∈ (AGray, GrayA)
+                    i = rand(ds2...)
+                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                elseif cs ∈ (Gray,)
+                    i = rand(ds1...)
+                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                else
+                    i = rand(ds3...)
+                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
                 end
             end
         end
