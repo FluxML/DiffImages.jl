@@ -18,7 +18,7 @@ function channelify(m::AbstractArray{CT,N}) where {CT <: Colorant, N}
     e = eltype(m)
     m = channelview(m)
     if e <: AbstractGray
-        m = unsqueeze(m, 1)
+        m = reshape(m, 1, size(m)...)
     end
     t = ntuple(identity, ndims(m))
     m = permutedims(m, (t[2:end-1]...,1,t[end]))
