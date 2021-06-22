@@ -30,4 +30,4 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo = "github.com/FluxML/Flux3D.jl.git")
+deploydocs(; repo = "github.com/SomTambe/DiffImages.jl.git")
