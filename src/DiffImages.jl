@@ -3,11 +3,14 @@ module DiffImages
 using Flux,
       Images,
       Zygote,
-      CUDA
+      ChainRules,
+      ImageTransformations
 
-using Flux:@functor, unsqueeze
+using Flux:@adjoint, @functor, unsqueeze
+using ChainRules:NoTangent
 
-export colorify!
-include("conversions.jl")
+export colorify, channelify
+include("colors/conversions.jl")
+include("geometry/warp.jl")
 
 end # module
