@@ -52,9 +52,7 @@ jobs:
             using DiffImages
             doctest(DiffImages)'
       - name: Build and deploy
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For authentication with GitHub Actions token
-            run: julia --project=docs/ docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+        run: julia --project=docs/ docs/make.jl
+        
