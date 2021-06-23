@@ -51,8 +51,6 @@ jobs:
             using Documenter: doctest
             using DiffImages
             doctest(DiffImages)'
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
