@@ -37,7 +37,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
-          branch: gh-pages
           version: '1.6'
       - run: |
           julia --project=docs -e '
