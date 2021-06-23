@@ -30,4 +30,4 @@ makedocs(;
     ],
 )
 
-deploydocs(; repo = "github.com/SomTambe/DiffImages.jl.git")
+deploydocs(devbranch = "main"; repo = "github.com/SomTambe/DiffImages.jl.git")
