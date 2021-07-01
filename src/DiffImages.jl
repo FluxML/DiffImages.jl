@@ -4,9 +4,15 @@ using Flux,
       Images,
       Zygote,
       ChainRules,
-      ImageTransformations
+      ImageTransformations,
+      StaticArrays,
+      OffsetArrays,
+      Interpolations,
+      CoordinateTransformations,
+      ImageProjectiveGeometry
 
-using Flux:@adjoint, @functor, unsqueeze
+using Flux:@functor, unsqueeze
+using Zygote:@adjoint
 using ChainRules:NoTangent
 
 export colorify, channelify
