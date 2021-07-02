@@ -51,7 +51,12 @@ end
 function ChainRulesCore.rrule(itp::AbstractExtrapolation, x...)
   y = itp(x...)
   function pullback(Δy)
-    (Δy, Interpolations.gradient(itp, x...)...)
+    tmp = if checkbounds(Bool, itp, x...)
+      Interpolations.gradient(itp, x...)
+    else
+      ntuple(_ -> zero.(eltype(itp)), length(x))
+    end
+    (Δy, tmp...)
   end
   y, pullback
 end
