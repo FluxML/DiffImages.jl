@@ -12,7 +12,7 @@ end
 # Defining required methods for ImageTransformations.warp to work
 function (h::homography{T})(x::SVector{3,K}) where {T,K}
     y = h.H*x
-    return (y./y[end])[1:2]
+    return y[1:2] # (y./y[end])[1:2]
 end
 
 function (h::homography{T})(x::SVector{2,K}) where {T,K}
