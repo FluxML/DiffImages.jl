@@ -59,3 +59,9 @@ end
 Zygote.@adjoint function SVector{N,T}(x...) where {T,N}
   SVector{N,T}(x...), Δ -> (Δ...,)
 end
+
+# Zygote.@nograd custom_autorange
+
+Zygote.@adjoint function CartesianIndices(t::Tuple)
+  CartesianIndices(t), Δ -> (Δ,)
+end
