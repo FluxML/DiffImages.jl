@@ -72,8 +72,8 @@ Zygote.@adjoint function Interpolations.BSplineInterpolation{T, N, TA, IT, TAX}(
   end
 end
 
-Zygote.@adjoint function Extrapolation{T,N,ITPT,IT,ET}(itp, et::Union{Interpolations.Flat}) where {T,N,ITPT,IT,ET}
-  Extrapolation{T,N,ITPT,IT,ET}(itp, et), Δ -> (Δ, nothing)
+Zygote.@adjoint function Interpolations.Extrapolation{T,N,ITPT,IT,ET}(itp, et::Union{Interpolations.Flat, Interpolations.Reflect, Interpolations.Line}) where {T,N,ITPT,IT,ET}
+  Interpolations.Extrapolation{T,N,ITPT,IT,ET}(itp, et), Δ -> (Δ, nothing)
 end
 
 Zygote.@nograd Interpolations.tweight
