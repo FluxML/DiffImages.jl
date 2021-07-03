@@ -51,11 +51,22 @@ end
 function ChainRulesCore.rrule(itp::AbstractExtrapolation, x...)
   y = itp(x...)
   function pullback(Δy)
-    (Δy, Interpolations.gradient(itp, x...)...)
+    tmp = if checkbounds(Bool, itp, x...)
+      Interpolations.gradient(itp, x...)
+    else
+      ntuple(_ -> zero.(eltype(itp)), length(x))
+    end
+    (Δy, tmp...)
   end
   y, pullback
 end
 
 Zygote.@adjoint function SVector{N,T}(x...) where {T,N}
   SVector{N,T}(x...), Δ -> (Δ...,)
+end
+
+# Zygote.@nograd custom_autorange
+
+Zygote.@adjoint function CartesianIndices(t::Tuple)
+  CartesianIndices(t), Δ -> (Δ,)
 end
