@@ -11,12 +11,14 @@ using Flux,
       CoordinateTransformations,
       ImageProjectiveGeometry
 
-using Flux:@functor, unsqueeze
-using Zygote:@adjoint
-using ChainRules:NoTangent
+using Flux: @functor, unsqueeze
+using Zygote: @adjoint
+using ChainRules: NoTangent
+using ChainRulesCore
 
 export colorify, channelify
 include("colors/conversions.jl")
 include("geometry/warp.jl")
+include("geometry/adjoints.jl")
 
 end # module
