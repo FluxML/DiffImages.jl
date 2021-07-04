@@ -8,8 +8,7 @@ using Flux,
       StaticArrays,
       OffsetArrays,
       Interpolations,
-      CoordinateTransformations,
-      ImageProjectiveGeometry
+      CoordinateTransformations
 
 using Flux: @functor, unsqueeze
 using Zygote: @adjoint
