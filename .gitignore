@@ -23,4 +23,5 @@ docs/site/
 # environment.
 .vscode
 Manifest.toml
+mytests.jl
 
