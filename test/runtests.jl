@@ -3,7 +3,9 @@ using Test,
       Flux,
       DiffImages,
       Images,
-      ImageTransformations
+      ImageTransformations,
+      Interpolations,
+      StaticArrays
 
 @testset "DiffImages" begin
     @info "Testing Colorspace modules"
