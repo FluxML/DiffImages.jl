@@ -12,4 +12,8 @@ using Test,
     @testset "Colorspace" begin
         include("colors/conversions.jl")
     end
+    @info "Testing adjoints"
+    @testset "Gradients" begin
+          include("gradients/adjoints.jl")
+    end
 end
