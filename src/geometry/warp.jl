@@ -14,7 +14,7 @@ end
 # Defining required methods for ImageTransformations.warp to work
 function (h::homography{T})(x::SVector{3,K}) where {T,K}
     y = h.H*x
-    return y[1:2] # (y./y[end])[1:2]
+    return SVector{2,Float64}(y[1:2]/y[end])
 end
 
 function (h::homography{T})(x::SVector{2,K}) where {T,K}
@@ -26,11 +26,23 @@ function Base.inv(h::homography{T}) where T
     return homography{T}(i)
 end
 
-# adjoint for round(args; kwargs...) since only adjoint for round(args) was defined.
-function ChainRules.rrule(f::typeof(round), x; kwargs...)
-    ȳ = round(x; kwargs...)
-    function pbs(Δ)
-        return (NoTangent(), Δ*zero(x))
+function custom_autorange(R::CartesianIndices, tform)
+    mn = mx = tform(SVector(first(R).I))
+    for I in (first(R), last(R))
+        x = tform(SVector(I.I))
+        # we map min and max to prevent type-inference issues
+        # (because min(::SVector,::SVector) -> Vector)
+        mn = map(min, x, mn)
+        mx = map(max, x, mx)
     end
-    return (ȳ, pbs)
+    ImageTransformations._autorange(Tuple(mn), Tuple(mx))
 end
+
+custom_autorange(A::AbstractArray, tform) = custom_autorange(CartesianIndices(A), tform)
+
+# function warp_me2(img::AbstractArray{T}, tform) where T
+#     img = ImageTransformations.box_extrapolation(img, fillvalue = Interpolations.Flat())
+#     e = eltype(img)
+#     inds = DiffImages.custom_autorange(img, inv(tform))
+#     map(x -> ImageTransformations._getindex(img, tform(SVector(x.I))), CartesianIndices(inds))
+#   end

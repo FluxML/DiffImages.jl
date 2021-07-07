@@ -15,9 +15,10 @@ using Zygote: @adjoint
 using ChainRules: NoTangent
 using ChainRulesCore
 
-export colorify, channelify
 include("colors/conversions.jl")
 include("geometry/warp.jl")
 include("geometry/adjoints.jl")
+
+export colorify, channelify, homography
 
 end # module
