@@ -52,7 +52,7 @@ end
 
 Zygote.@adjoint function SVector{N,T}(x...) where {T,N}
   SVector{N,T}(x...), Δ -> begin
-    (Δ...,)
+    (Δ,)
   end
 end
 
@@ -75,7 +75,6 @@ Zygote.@adjoint function ImageTransformations._getindex(A::AbstractExtrapolation
   y = A(Tuple(x)...)
   function ∇(δ)
       gr = Interpolations.gradient(A, Tuple(x)...)
-      # @show gr
       return (nothing, (gr,))
   end
   return (y, ∇)
