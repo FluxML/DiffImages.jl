@@ -4,10 +4,17 @@ using Flux,
       Images,
       Zygote,
       ChainRules,
-      ImageTransformations
+      ImageTransformations,
+      StaticArrays,
+      OffsetArrays,
+      CoordinateTransformations,
+      ColorVectorSpace,
+      Interpolations,
+      ChainRulesCore
 
-using Flux:@adjoint, @functor, unsqueeze
-using ChainRules:NoTangent
+using Flux: @functor, unsqueeze
+using Zygote: @adjoint
+using ChainRules: NoTangent
 
 export colorify, channelify
 include("colors/conversions.jl")
