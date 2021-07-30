@@ -14,7 +14,7 @@ using Flux,
 
 using Flux: @functor, unsqueeze
 using Zygote: @adjoint
-using ChainRules: NoTangent
+using ChainRulesCore: NoTangent
 
 export colorify, channelify
 include("colors/conversions.jl")
