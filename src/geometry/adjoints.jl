@@ -48,5 +48,5 @@ function ChainRulesCore.rrule(::typeof(CartesianIndices), t::Tuple)
     y = CartesianIndices(t)
     return (y, Δ -> begin
         (NoTangent(), Δ)
-    end
+    end)
 end
