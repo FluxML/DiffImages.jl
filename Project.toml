@@ -17,6 +17,14 @@ StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
+[compat]
+Flux = "0.12.6"
+ImageTransformations = "0.8, 0.9"
+Images = "0.23, 0.24"
+Interpolations = "0.13.3"
+OffsetArrays = "1"
+Zygote = "0.6.17"
+
 [extras]
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
