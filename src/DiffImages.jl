@@ -19,7 +19,6 @@ using ChainRulesCore: NoTangent
 
 export colorify, channelify
 include("colors/conversions.jl")
-include("geometry/warp.jl")
 include("geometry/adjoints.jl")
 
 end # module
