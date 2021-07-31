@@ -1,5 +1,6 @@
 module DiffImages
 
+using ImageTransformations: include
 using Flux,
       Images,
       Zygote,
@@ -19,5 +20,6 @@ using ChainRulesCore: NoTangent
 export colorify, channelify
 include("colors/conversions.jl")
 include("geometry/warp.jl")
+include("geometry/adjoints.jl")
 
 end # module
