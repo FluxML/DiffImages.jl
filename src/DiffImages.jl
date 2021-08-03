@@ -1,6 +1,4 @@
 module DiffImages
-
-using ImageTransformations: include
 using Flux,
       Images,
       Zygote,
