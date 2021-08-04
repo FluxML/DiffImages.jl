@@ -1,10 +1,10 @@
-function ChainRulesCore.rrule(::Interpolations.BSplineInterpolation, T, A, it, axs)
-    y = Interpolations.BSplineInterpolation(T, A, it, axs)
-    function bspline_pb(Δy)
-        return NoTangent(), NoTangent(), Δy, NoTangent(), NoTangent()
-    end
-    return y, bspline_pb
-end
+# function ChainRulesCore.rrule(::Interpolations.BSplineInterpolation, T, A, it, axs)
+#     y = Interpolations.BSplineInterpolation(T, A, it, axs)
+#     function bspline_pb(Δy)
+#         return NoTangent(), NoTangent(), Δy, NoTangent(), NoTangent()
+#     end
+#     return y, bspline_pb
+# end TODO: Remove the rrule later.
 
 function ChainRulesCore.rrule(::Type{Interpolations.BSplineInterpolation{T, N, TA, IT, TAX}}, A, axs, it) where {T, N, TA, IT, TAX}
     y = Interpolations.BSplineInterpolation{T, N, TA, IT, TAX}(A, axs, it)
