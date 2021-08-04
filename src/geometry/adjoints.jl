@@ -46,7 +46,7 @@ function ChainRulesCore.rrule(::Type{SVector{N, T}}, x...) where {N, T}
     function svector_const_pb(Δy)
         return NoTangent(), Δy
     end
-    return y, svector_pb
+    return y, svector_const_pb
 end
 
 function ChainRulesCore.rrule(::CartesianIndices, t::Tuple)
