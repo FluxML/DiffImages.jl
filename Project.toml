@@ -24,6 +24,7 @@ Images = "0.23, 0.24"
 Interpolations = "0.13.3"
 OffsetArrays = "1"
 Zygote = "0.6.17"
+ColorVectorSpace = "0.9.5"
 
 [extras]
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
