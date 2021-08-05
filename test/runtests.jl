@@ -2,11 +2,12 @@ using Test,
       Zygote,
       Flux,
       DiffImages,
-      Images,
+      ImageCore,
       ImageTransformations,
       Interpolations,
       StaticArrays,
-      FiniteDifferences
+      FiniteDifferences,
+      Zygote
 
 @testset "DiffImages" begin
     @info "Testing Colorspace modules"
