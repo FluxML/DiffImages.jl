@@ -44,15 +44,17 @@ end
 function ChainRulesCore.rrule(::Type{SVector{N, T}}, x...) where {N, T}
     y = SVector{N,T}(x...)
     function svector_const_pb(Δy)
+        Δy = map(t->eltype(x...)(t...), Δy)
         return NoTangent(), Δy
     end
     return y, svector_const_pb
 end
 
-function ChainRulesCore.rrule(::CartesianIndices, t::Tuple)
-    y = CartesianIndices(t)
-    function cartesianindices_pb(Δy)
-        return NoTangent(), Δy
+function ChainRulesCore.rrule(::Type{CartesianIndices{N, T}}, x::Tuple) where {N,T}
+    y = CartesianIndices{N,T}(x)
+    function cartesian_pb(Δy)
+        # ∇x does not exist mathematically since x::Tuple{UnitRange, UnitRange}
+        return NoTangent(), NoTangent()
     end
-    return y, cartesianindices_pb
+    return y, cartesian_pb
 end
