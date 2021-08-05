@@ -9,32 +9,31 @@ ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 CoordinateTransformations = "150eb455-5306-5404-9cee-2592286d6298"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
+ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 ImageTransformations = "02fcd773-0e25-5acc-982a-7f6622650795"
-Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
+ColorVectorSpace = "0.9.5"
 Flux = "0.12.6"
 ImageTransformations = "0.8, 0.9"
-Images = "0.23, 0.24"
 Interpolations = "0.13.3"
-OffsetArrays = "1"
 Zygote = "0.6.17"
+ImageCore = "0.9"
 
 [extras]
+ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
 Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
 ImageTransformations = "02fcd773-0e25-5acc-982a-7f6622650795"
-Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
+ColorVectorSpace = "c3611d14-8923-5661-9e6a-0046d554d3a4"
 
 [targets]
-test = ["Zygote", "Test", "FiniteDifferences", "Interpolations", "OffsetArrays", "StaticArrays", "Images", "ImageTransformations", "Flux"]
+test = ["Zygote", "Test", "FiniteDifferences", "Interpolations", "StaticArrays", "ColorVectorSpace", "ImageTransformations", "Flux"]

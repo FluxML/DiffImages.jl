@@ -1,11 +1,10 @@
 module DiffImages
 using Flux,
-      Images,
+      ImageCore,
       Zygote,
       ChainRules,
       ImageTransformations,
       StaticArrays,
-      OffsetArrays,
       CoordinateTransformations,
       ColorVectorSpace,
       Interpolations,
@@ -19,4 +18,4 @@ export colorify, channelify
 include("colors/conversions.jl")
 include("geometry/adjoints.jl")
 
-end # module
+end
