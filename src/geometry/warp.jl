@@ -5,7 +5,7 @@ that a `CoordinateTransformations.Transformation` supports. Outputs homogenous c
 
 # Examples
 ```jldoctest; setup = :(using DiffImages)
-julia> h = Homography()
+julia> h = DiffImages.Homography()
 Homography{Float64}([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0])
 
 julia> h(SVector((1.0, 2.0, 3.0)))
@@ -34,3 +34,11 @@ function Base.inv(h::Homography{T}) where T
     i = inv(h.H)
     return Homography{T}(i)
 end
+
+# Fancy way to print the Homography struct
+function Base.show(::IO, ::MIME"text/plain", h::DiffImages.Homography{K}) where K
+    println("DiffImages.Homography{$K} with:")
+    display(h.H)
+end
+
+Base.:-(ŷ::NamedTuple) = map(x->-x, ŷ)

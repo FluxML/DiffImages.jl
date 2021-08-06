@@ -44,19 +44,20 @@ end
 function ChainRulesCore.rrule(::Type{SVector{N, T}}, x...) where {N, T}
     y = SVector{N,T}(x...)
     function svector_const_pb(Δy)
+        Δy = map(t->eltype(x...)(t...), Δy)
         return NoTangent(), Δy
     end
     return y, svector_const_pb
 end
 
-function ChainRulesCore.rrule(::CartesianIndices, t::Tuple)
-    y = CartesianIndices(t)
-    function cartesianindices_pb(Δy)
-        return NoTangent(), Δy
+function ChainRulesCore.rrule(::Type{CartesianIndices{N, T}}, x::Tuple) where {N,T}
+    y = CartesianIndices{N,T}(x)
+    function cartesian_pb(Δy)
+        # ∇x does not exist mathematically since x::Tuple{UnitRange, UnitRange}
+        return NoTangent(), NoTangent()
     end
-    return y, cartesianindices_pb
+    return y, cartesian_pb
 end
-
 
 function ChainRulesCore.rrule(::typeof(ImageTransformations._getindex), A::AbstractExtrapolation, x)
     y = A(Tuple(x)...)
@@ -64,7 +65,8 @@ function ChainRulesCore.rrule(::typeof(ImageTransformations._getindex), A::Abstr
         # Δy :: NamedTuple{(:r, :g, :b)} or something similar
         Δy = eltype(A)(Δy...)
         gr = Interpolations.gradient(A, Tuple(x)...)
-        return NoTangent(), NoTangent(), Δy .⋅ gr
+        n = nfields(Δy) > 0 ? nfields(Δy) : 1
+        return NoTangent(), NoTangent(), Δy .⋅ gr .⋅ n
     end
     return y, _getindex_pb
 end
@@ -90,7 +92,7 @@ function ChainRulesCore.rrule(::typeof(ImageTransformations.warp!), out, img::Ab
     function warp!_pb(Δy)
         ∇out = NoTangent()
         ∇img = @not_implemented("To be implemented.")
-        ∇tform = ZeroTangent()
+        ∇tform = ZeroTangent() # Change this to Tangent{primal}
         Δy = collect(Δy)
         for p in CartesianIndices(out)
             _, ∇τ = rrule(ImageTransformations._getindex, img, p.I)
