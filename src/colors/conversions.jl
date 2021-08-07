@@ -6,7 +6,7 @@ Input should be in ``WHN`` order ``\\implies (*, batch)``.
 Output will be in the order ``(*, channels, batch)``.
 
 # Examples
-```jldoctest; setup = :(using Images,DiffImages)
+```jldoctest; setup = :(using ImageCore, DiffImages)
 julia> input_size = (16, 16, 2)
 (16, 16, 2)
 
@@ -85,7 +85,7 @@ Converts the array to the `color` specified.
 
 
 # Examples
-```jldoctest; setup = :(using Images,DiffImages)
+```jldoctest; setup = :(using ImageCore, DiffImages)
 julia> input_size = (25, 25, 3, 7)
 (25, 25, 3, 7)
 

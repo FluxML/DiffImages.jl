@@ -1,16 +1,21 @@
 module DiffImages
-
 using Flux,
-      Images,
+      ImageCore,
       Zygote,
       ChainRules,
-      ImageTransformations
+      ImageTransformations,
+      StaticArrays,
+      CoordinateTransformations,
+      ColorVectorSpace,
+      Interpolations,
+      ChainRulesCore
 
-using Flux:@adjoint, @functor, unsqueeze
-using ChainRules:NoTangent
+using Flux: @functor, unsqueeze
+using Zygote: @adjoint
+using ChainRulesCore: NoTangent
 
 export colorify, channelify
 include("colors/conversions.jl")
-include("geometry/warp.jl")
+include("geometry/adjoints.jl")
 
-end # module
+end
