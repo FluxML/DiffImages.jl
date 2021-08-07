@@ -1,10 +1,10 @@
-function ChainRulesCore.rrule(::Interpolations.BSplineInterpolation, T, A, it, axs)
-    y = Interpolations.BSplineInterpolation(T, A, it, axs)
-    function bspline_pb(Δy)
-        return NoTangent(), NoTangent(), Δy, NoTangent(), NoTangent()
-    end
-    return y, bspline_pb
-end # TODO: Remove the functor rrule
+# function ChainRulesCore.rrule(::Interpolations.BSplineInterpolation, T, A, it, axs)
+#     y = Interpolations.BSplineInterpolation(T, A, it, axs)
+#     function bspline_pb(Δy)
+#         return NoTangent(), NoTangent(), Δy, NoTangent(), NoTangent()
+#     end
+#     return y, bspline_pb
+# end TODO: Remove the rrule later.
 
 function ChainRulesCore.rrule(::Type{Interpolations.BSplineInterpolation{T, N, TA, IT, TAX}}, A, axs, it) where {T, N, TA, IT, TAX}
     y = Interpolations.BSplineInterpolation{T, N, TA, IT, TAX}(A, axs, it)
@@ -48,15 +48,6 @@ function ChainRulesCore.rrule(::Type{SVector{N, T}}, x...) where {N, T}
         return NoTangent(), Δy
     end
     return y, svector_const_pb
-end
-
-function ChainRulesCore.rrule(::Type{CartesianIndices{N, T}}, x::Tuple) where {N,T}
-    y = CartesianIndices{N,T}(x)
-    function cartesian_pb(Δy)
-        # ∇x does not exist mathematically since x::Tuple{UnitRange, UnitRange}
-        return NoTangent(), NoTangent()
-    end
-    return y, cartesian_pb
 end
 
 function ChainRulesCore.rrule(::typeof(ImageTransformations._getindex), A::AbstractExtrapolation, x)
