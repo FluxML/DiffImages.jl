@@ -4,14 +4,14 @@ Wrapper enclosing a Homography matrix, internally represented as a `SMatrix` fro
 that a `CoordinateTransformations.Transformation` supports. Outputs homogenous coordinates.
 
 # Examples
-```jldoctest; setup = :(using DiffImages)
+```jldoctest; setup = :(using DiffImages, StaticArrays)
 julia> h = DiffImages.Homography()
 Homography{Float64}([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0])
 
 julia> h(SVector((1.0, 2.0, 3.0)))
 2-element SVector{2, Float64} with indices SOneTo(2):
  0.3333333333333333
- 0.6666666666666666 # homogenous coordinates
+ 0.6666666666666666
 ```
 """
 struct Homography{T} <: CoordinateTransformations.Transformation
