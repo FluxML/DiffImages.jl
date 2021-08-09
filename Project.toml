@@ -19,10 +19,10 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 [compat]
 ColorVectorSpace = "0.9.5"
 Flux = "0.12.6"
-ImageTransformations = "0.8, 0.9"
-Interpolations = "0.13.3"
-Zygote = "0.6.17"
 ImageCore = "0.9"
+ImageTransformations = "0.8, 0.9"
+Zygote = "0.6.17"
+Interpolations = "≥ 0.13.4"
 
 [extras]
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
