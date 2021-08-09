@@ -6,7 +6,8 @@ using Test,
       ImageTransformations,
       Interpolations,
       StaticArrays,
-      FiniteDifferences
+      FiniteDifferences,
+      ChainRulesCore
 
 @testset "DiffImages" begin
     @info "Testing Colorspace modules"
