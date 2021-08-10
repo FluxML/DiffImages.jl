@@ -68,8 +68,8 @@ end
 @testset "DiffImages.Homography method gradient" begin
     h = DiffImages.Homography{Float64}(SMatrix{3,3,Float64,9}([1 0 0;0 1 0;0 0 1]))
     v = rand(SVector{2, Float64})
-    zy = Zygote.gradient((x,y)->x |> y |> sum, v, h)
-    fd = grad(central_fdm(5,1), (x,y)->x |> y |> sum, v, h)
+    zy = Zygote.gradient((x,y)->sum(y(x)), v, h)
+    fd = grad(central_fdm(5,1), (x,y)->sum(y(x)), v, h)
     @test zy[1] ≈ fd[1]
     @test zy[2].H ≈ fd[2].H
 end
