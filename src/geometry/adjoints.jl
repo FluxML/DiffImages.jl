@@ -57,7 +57,7 @@ function ChainRulesCore.rrule(::typeof(ImageTransformations._getindex), A::Abstr
         Δy = eltype(A)(Δy...)
         gr = Interpolations.gradient(A, x...)
         n = nfields(Δy) > 0 ? nfields(Δy) : 1
-        return NoTangent(), NoTangent(), Δy .⋅ gr .⋅ n
+        return NoTangent(), NoTangent(), (Δy .⋅ gr) * n
     end
     return y, _getindex_pb
 end
