@@ -22,7 +22,7 @@ Flux = "0.12.6"
 ImageCore = "0.9"
 ImageTransformations = "0.8, 0.9"
 Zygote = "0.6.17"
-Interpolations = "≥ 0.13.4"
+Interpolations = "0.13.4"
 
 [extras]
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
