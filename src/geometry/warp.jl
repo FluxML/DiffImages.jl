@@ -16,9 +16,16 @@ julia> h(SVector((1.0, 2.0, 3.0)))
 """
 struct Homography{T} <: CoordinateTransformations.Transformation
     H::SMatrix{3,3,T,9}
-    Homography() = new{Float64}(SMatrix{3,3,Float64}([1 0 0;0 1 0;0 0 1]))
-    Homography{T}() where T = new{T}(rand(SMatrix{3,3,T,9}))
-    Homography{T}(m::SMatrix{3,3,T,9}) where T = new(m)
+end
+
+function Homography()
+    return Homography{Float64}(SMatrix{3,3,Float64}([1 0 0;0 1 0;0 0 1]))
+end
+
+function Homography{T}() where T
+    sc = UniformScaling{T}(1)
+    m = Matrix(sc, 3, 3)
+    return Homography{T}(SMatrix{3, 3, T, 9}(m))
 end
 
 function (h::Homography{T})(x::SVector{3,K}) where {T,K}
@@ -36,9 +43,9 @@ function Base.inv(h::Homography{T}) where T
 end
 
 # Fancy way to print the Homography struct
-function Base.show(::IO, ::MIME"text/plain", h::DiffImages.Homography{K}) where K
-    println("DiffImages.Homography{$K} with:")
-    display(h.H)
+function Base.show(io::IO, mime::MIME"text/plain", h::DiffImages.Homography{K}) where K
+    println(io, "DiffImages.Homography{$K} with:")
+    show(io, mime, h.H)
 end
 
-Base.:-(ŷ::NamedTuple) = map(x->-x, ŷ)
+# Base.:-(ŷ::NamedTuple) = map(x->-x, ŷ)

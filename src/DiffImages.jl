@@ -8,7 +8,8 @@ using Flux,
       CoordinateTransformations,
       ColorVectorSpace,
       Interpolations,
-      ChainRulesCore
+      ChainRulesCore,
+      LinearAlgebra
 
 using Flux: @functor, unsqueeze
 using Zygote: @adjoint
