@@ -95,7 +95,7 @@ end
         a = rand(RGB{t}, 3, 3)
         b = rand(RGB{t}, 3, 3)
         zy = Zygote.gradient((x, y)->DiffImages.image_mse(x, y), a, b)
-        fd = grad(central_fdm(5,1), (x, y)->image_mse(x, y), a, b)
+        fd = grad(central_fdm(5,1), (x, y)->DiffImages.image_mse(x, y), a, b)
         
         @test map(x->RGB{t}(x...), zy[1]) ≈ fd[1]
         @test map(x->RGB{t}(x...), zy[2]) ≈ fd[2]

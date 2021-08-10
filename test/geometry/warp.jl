@@ -55,7 +55,7 @@ function ChainRulesCore.rrule(::typeof(project), X, H)
 end
 
 @testset "ImageTransformations.warp! gradient" begin
-    h = DiffImages.Homography{Float64}(SMatrix{3,3,Float64,9}([1 0 0;0 1 0;0 0 1]))
+    h = DiffImages.Homography()
     H = [1.0 0.0 0.0;0.0 1.0 0.0;0.0 0.0 1.0]
 
     _abs2(c) = mapreducec(v->v^2, +, 0, c)
@@ -64,13 +64,13 @@ end
 
     zy = Zygote.gradient(h) do trfm
         out = ImageTransformations.warp(img, trfm, axes(img), zero(eltype(img)))
-        out = sum(_abs2.(out - tgt))
+        out = DiffImages.image_mse(out, tgt)
         out
     end
 
     man = Zygote.gradient(H) do trfm
         out = project(img, trfm)
-        out = sum(_abs2.(out - tgt))
+        out = DiffImages.image_mse(out, tgt)
         out
     end
 
