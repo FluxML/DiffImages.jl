@@ -47,5 +47,3 @@ function Base.show(io::IO, mime::MIME"text/plain", h::DiffImages.Homography{K}) 
     println(io, "DiffImages.Homography{$K} with:")
     show(io, mime, h.H)
 end
-
-# Base.:-(ŷ::NamedTuple) = map(x->-x, ŷ)
