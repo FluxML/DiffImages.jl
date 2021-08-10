@@ -6,7 +6,11 @@ that a `CoordinateTransformations.Transformation` supports. Outputs homogenous c
 # Examples
 ```jldoctest; setup = :(using DiffImages, StaticArrays)
 julia> h = DiffImages.Homography()
-Homography{Float64}([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0])
+DiffImages.Homography{Float64} with:
+3×3 SMatrix{3, 3, Float64, 9} with indices SOneTo(3)×SOneTo(3):
+ 1.0  0.0  0.0
+ 0.0  1.0  0.0
+ 0.0  0.0  1.0
 
 julia> h(SVector((1.0, 2.0, 3.0)))
 2-element SVector{2, Float64} with indices SOneTo(2):
