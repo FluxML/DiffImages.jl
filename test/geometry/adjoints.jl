@@ -2,7 +2,7 @@ m = rand(3, 3)
 axs = (1:3, 1:3)
 ty = Interpolations.BSplineInterpolation{Float64, ndims(m), typeof(m), BSpline{Linear{Throw{OnGrid}}}, typeof(axs)}
 etty = Interpolations.Extrapolation{Float64, 2, Interpolations.BSplineInterpolation{Float64, 2, Matrix{Float64}, BSpline{Linear{Throw{OnGrid}}}, Tuple{UnitRange{Int64}, UnitRange{Int64}}}, BSpline{Linear{Throw{OnGrid}}}, Flat{Nothing}}
-fieldsum(x) = mapreduce(y->getfield(x, y), +, ntuple(z->z, nfields(x)))
+fieldsum(x) = mapreduce(y->getfield(x, y), +, ntuple(identity, nfields(x)))
 
 @testset "Interpolations.BSplineInterpolation constructor gradient" begin
     zg = Zygote.gradient((x,y,z)->sum(ty(x,y,z)), m, axs, BSpline(Linear()))
@@ -87,5 +87,17 @@ end
                 @test zy[2] ≈ Interpolations.gradient(itp, ind...)
             end
         end
+    end
+end
+
+@testset "DiffImages.image_mse gradient" begin
+    for t in (Float32, Float64)
+        a = rand(RGB{t}, 3, 3)
+        b = rand(RGB{t}, 3, 3)
+        zy = Zygote.gradient((x, y)->DiffImages.image_mse(x, y), a, b)
+        fd = grad(central_fdm(5,1), (x, y)->image_mse(x, y), a, b)
+        
+        @test map(x->RGB{t}(x...), zy[1]) ≈ fd[1]
+        @test map(x->RGB{t}(x...), zy[2]) ≈ fd[2]
     end
 end
