@@ -78,6 +78,10 @@ function ChainRulesCore.rrule(h::DiffImages.Homography, x::SVector{2,K}) where {
     return y, Homography_pb
 end
 
+function ChainRulesCore.rrule_via_ad(::Zygote.ZygoteRuleConfig, h::DiffImages.Homography, x::SVector{2, K}) where K
+    Zygote.pullback((x, y)->x(y), h, x)
+end
+
 function ChainRulesCore.rrule(::typeof(ImageTransformations.warp!), out, img::AbstractExtrapolation, tform)
     out = ImageTransformations.warp!(out, img, tform)
     function warp!_pb(Δy)
@@ -88,9 +92,9 @@ function ChainRulesCore.rrule(::typeof(ImageTransformations.warp!), out, img::Ab
         for p in CartesianIndices(out)
             _, ∇τ = rrule(ImageTransformations._getindex, img, p.I)
             _, _, ∇τ = ∇τ(Δy[p])
-            _, ∇ϕ = rrule(tform, SVector(p.I))
+            _, ∇ϕ = rrule_via_ad(Zygote.ZygoteRuleConfig(), tform, SVector(p.I))
             ∇h, _ = ∇ϕ(∇τ)
-            ∇tform += ∇h
+            ∇tform += Tangent{DiffImages.Homography}(H = ∇h.H)
         end
         return NoTangent(), ∇out, ∇img, ∇tform
     end
