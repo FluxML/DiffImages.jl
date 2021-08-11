@@ -6,7 +6,8 @@ using Test,
       ImageTransformations,
       Interpolations,
       StaticArrays,
-      FiniteDifferences
+      FiniteDifferences,
+      ChainRulesCore
 
 @testset "DiffImages" begin
     @info "Testing Colorspace modules"
@@ -17,5 +18,8 @@ using Test,
     @info "Testing Geometry modules"
     @testset "Adjoints" begin
         include("geometry/adjoints.jl")
+    end
+    @testset "Warps" begin
+        include("geometry/warp.jl")
     end
 end
