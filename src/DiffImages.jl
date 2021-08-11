@@ -19,6 +19,5 @@ export colorify, channelify
 include("colors/conversions.jl")
 include("geometry/warp.jl")
 include("geometry/adjoints.jl")
-include("geometry/losses.jl")
 
 end
