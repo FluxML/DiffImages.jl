@@ -95,7 +95,7 @@ end
         loss
     end
 
-    tfm1 = recenter(RotMatrix(pi/8), center(img)) # using RotMatrix
+    tfm1 = recenter(RotMatrix(π/8), center(img)) # using RotMatrix
     tfm2 = AffineMap(SMatrix{2, 2, Float64, 4}([cos(π/8) -sin(π/8); sin(π/8) cos(π/8)]), tfm1.translation)
 
     zy1 = Zygote.gradient(f, tfm1)
