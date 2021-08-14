@@ -53,25 +53,56 @@ end
     end # TODO: Remove the @test_broken after tests work.
 end
 
-@testset "SVector{N, T} gradient" begin
+@testset "SVector{N, T} and SMatrix{N, N, T, L} gradient" begin
     for t in (Float32, Float64, RGB{Float32}, RGB{Float64})
         inp = rand(t, 2)
+        inp_mat = rand(t, 3, 3)
         _sep(x) = x.r + x.g + x.b
         if t ∈ (Float32, Float64)
             @test Zygote.gradient(x->sum(SVector{2, t}(x)), inp)[1] == ones(t, 2)
+            @test Zygote.gradient(x->sum(SMatrix{3, 3, t, 9}(x)), inp_mat)[1] == ones(t, 3, 3)
         else
             @test Zygote.gradient(x->_sep(sum(SVector{2, t}(x))), inp)[1] == ones(t, 2)
+            @test Zygote.gradient(x->_sep(sum(SMatrix{3, 3, t, 9}(x))), inp_mat)[1] == ones(t, 3, 3)
         end
     end
 end
 
 @testset "DiffImages.Homography method gradient" begin
-    h = DiffImages.Homography()
+    h = DiffImages.Homography{Float64}()
     v = rand(SVector{2, Float64})
     zy = Zygote.gradient((x,y)->sum(y(x)), v, h)
     fd = grad(central_fdm(5,1), (x,y)->sum(y(x)), v, h)
-    @test zy[1] ≈ fd[1]
+
     @test zy[2].H ≈ fd[2].H
+    @test typeof(zy[2].H) == typeof(fd[2].H)
+end
+
+@testset "CoordinateTransformations.LinearMap gradient" begin
+    m = CoordinateTransformations.LinearMap(rand(3, 3))
+    sm = CoordinateTransformations.LinearMap(rand(SMatrix{3, 3, Float64}))
+    v = rand(3)
+    sv = rand(SVector{3, Float64})
+    zy = Zygote.gradient((x, y)->sum(x(y)), m, v)
+    fd = grad(central_fdm(5,1), (x, y)->sum(x(y)), m, v)
+    zy_s = Zygote.gradient((x, y)->sum(x(y)), sm, sv)
+    fd_s = grad(central_fdm(5,1), (x, y)->sum(x(y)), sm, sv)
+
+    @test zy[1].linear ≈ fd[1].linear
+    @test zy[2] ≈ fd[2]
+    @test typeof(zy[1].linear) == typeof(fd[1].linear)
+    @test zy_s[1].linear ≈ fd_s[1].linear
+    @test zy_s[2] ≈ fd_s[2]
+    @test_broken typeof(zy_s[1].linear) == typeof(fd_s[1].linear) # TODO: fix in another issue.
+end
+
+@testset "Rotations.RotMatrix{N, T, L} gradient" begin
+    rm = RotMatrix(π/4)
+    v = rand(2)
+    zy = Zygote.gradient((x, y)->sum(LinearMap(x)(y)), rm, v)
+    fd = grad(central_fdm(5,1), (x, y)->sum(LinearMap(x)(y)), rm, v)
+    @test zy[1] ≈ fd[1]
+    @test zy[2] ≈ fd[2]
 end
 
 @testset "ImageTransformations._getindex gradient" begin

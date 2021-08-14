@@ -62,7 +62,7 @@ function image_mse(y, ŷ)
 end
 
 @testset "ImageTransformations.warp! gradient" begin
-    h = DiffImages.Homography()
+    h = DiffImages.Homography{Float64}()
     H = [1.0 0.0 0.0;0.0 1.0 0.0;0.0 0.0 1.0]
 
     _abs2(c) = mapreducec(v->v^2, +, 0, c)
@@ -83,4 +83,28 @@ end
 
     @test_broken zy[1].H ≈ man[1]
     @test zy[1].H ≈ -man[1] # TODO: Remove this test and make the above @test_broken -> @test after resolving the sign thing
+end
+
+@testset "RotMatrix vs. Non-RotMatrix" begin
+    img = rand(RGB{Float32}, 10, 10)
+    tgt = rand(RGB{Float32}, 10, 10)
+
+    f(t) = begin
+        out = ImageTransformations.warp(img, t, axes(img), zero(eltype(img)))
+        loss = image_mse(out, tgt)
+        loss
+    end
+
+    tfm1 = recenter(RotMatrix(pi/8), center(img)) # using RotMatrix
+    tfm2 = AffineMap(SMatrix{2, 2, Float64, 4}([cos(π/8) -sin(π/8); sin(π/8) cos(π/8)]), tfm1.translation)
+
+    zy1 = Zygote.gradient(f, tfm1)
+    zy2 = Zygote.gradient(f, tfm2)
+
+    # The gradients are the same, but if you use `RotMatrix`s, you get nested NamedTuples,
+    # for example: 
+    # zy1[1] => (linear = (mat = (data = [37.49...
+    # zy2[1] => (linear = [37.49...
+    @test_broken zy1[1].linear === zy2[1].linear # TODO: Resolve this in a seperate issue
+    @test zy1[1].linear.mat.data === zy2[1].linear
 end
