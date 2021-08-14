@@ -9,7 +9,8 @@ using Flux,
       ColorVectorSpace,
       Interpolations,
       ChainRulesCore,
-      LinearAlgebra
+      LinearAlgebra, 
+      Rotations
 
 using Flux: @functor, unsqueeze
 using Zygote: @adjoint
