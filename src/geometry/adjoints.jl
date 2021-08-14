@@ -50,6 +50,24 @@ function ChainRulesCore.rrule(::Type{SVector{N, T}}, x...) where {N, T}
     return y, svector_const_pb
 end
 
+function ChainRulesCore.rrule(::Type{SMatrix{N, M, T, K}}, x...) where {N, M, T, K}
+    y = SMatrix{N, M, T, K}(x...)
+    function smat_const_pb(Δy)
+        Δy = map(t->eltype(x...)(t...), Δy)
+        return NoTangent(), Δy
+    end
+    return y, smat_const_pb
+end
+
+function ChainRulesCore.rrule(p::Type{RotMatrix{N, T, L}}, x) where {N, T, L}
+    y = p(x)
+    function rotmat_pb(Δy)
+        Δy = p(Δy)
+        return NoTangent(), Δy
+    end
+    return y, rotmat_pb
+end
+
 function ChainRulesCore.rrule(::typeof(ImageTransformations._getindex), A::AbstractExtrapolation, x)
     y = A(Tuple(x)...)
     function _getindex_pb(Δy)
@@ -62,22 +80,6 @@ function ChainRulesCore.rrule(::typeof(ImageTransformations._getindex), A::Abstr
     return y, _getindex_pb
 end
 
-function ChainRulesCore.rrule(h::DiffImages.Homography, x::SVector{2,K}) where {K}
-    # elements of x => (i₀,j₀)
-    y = h(x) # Gives us (i j)
-    function Homography_pb(Δy)
-        # Δy => (∂g/∂i ∂g/∂j) :: SVector{2, Float64}
-        v₁ = h.H * SVector((x..., 1.0)) # Gives us (i₁ j₁ z)
-        ∂ij_∂W = begin
-            r₁ = [x[1] x[2] one(K)]
-            r₂ = zeros(K, 1, 3)
-            [1 / v₁[3] * vcat(r₁, r₂, -y[1] * r₁), 1 / v₁[3] * vcat(r₂, r₁, -y[2] * r₁)]
-        end
-        return Tangent{DiffImages.Homography}(H = Δy' * ∂ij_∂W), (h.H[1:2, 1:2]*Δy) ./ v₁[3]
-    end
-    return y, Homography_pb
-end
-
 function ChainRulesCore.rrule_via_ad(::Zygote.ZygoteRuleConfig, h::DiffImages.Homography, x::SVector{2, K}) where K
     Zygote.pullback((x, y)->x(y), h, x)
 end
@@ -87,14 +89,15 @@ function ChainRulesCore.rrule(::typeof(ImageTransformations.warp!), out, img::Ab
     function warp!_pb(Δy)
         ∇out = NoTangent()
         ∇img = @not_implemented("To be implemented.")
-        ∇tform = Tangent{DiffImages.Homography}(H = zeros(eltype(tform.H), 3, 3)) # TODO: Change this to Tangent{LinearMap} when generalized in future
+        flds = fieldnames(typeof(tform))
+        ∇tform = canonicalize(Tangent{typeof(tform)}())
         Δy = collect(Δy)
         for p in CartesianIndices(out)
             _, ∇τ = rrule(ImageTransformations._getindex, img, p.I)
             _, _, ∇τ = ∇τ(Δy[p])
             _, ∇ϕ = rrule_via_ad(Zygote.ZygoteRuleConfig(), tform, SVector(p.I))
             ∇h, _ = ∇ϕ(∇τ)
-            ∇tform += Tangent{DiffImages.Homography}(H = ∇h.H)
+            ∇tform += Tangent{typeof(tform)}(;NamedTuple{flds}(∇h)...)
         end
         return NoTangent(), ∇out, ∇img, ∇tform
     end
