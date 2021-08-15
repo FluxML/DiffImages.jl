@@ -108,3 +108,17 @@ end
     @test_broken zy1[1].linear === zy2[1].linear # TODO: Resolve this in a seperate issue
     @test zy1[1].linear.mat.data === zy2[1].linear
 end
+
+@testset "Homography struct tests" begin
+    h = DiffImages.Homography{Float32}()
+    # Checking type stability of (h::Homography{K})(x::AbstractVector{L})
+    for i ∈ (2, 3)
+        v = rand(Float32, i)
+        @test @inferred(h(v)) == h(v)
+    end
+    # Checking type stability of (h::Homography{K})(x::SVector{Union{2, 3}, L})
+    for i ∈ (2, 3)
+        v = rand(SVector{i, Float32})
+        @test @inferred(h(v)) == h(v)
+    end
+end
