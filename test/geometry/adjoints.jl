@@ -73,7 +73,7 @@ end
     v = rand(SVector{2, Float64})
     zy = Zygote.gradient((x,y)->sum(y(x)), v, h)
     fd = grad(central_fdm(5,1), (x,y)->sum(y(x)), v, h)
-
+    @test (zy[1] .≈ fd[1]) == Bool[1, 1]
     @test zy[2].H ≈ fd[2].H
     @test typeof(zy[2].H) == typeof(fd[2].H)
 end
