@@ -41,22 +41,13 @@ function ChainRulesCore.rrule(::Type{Interpolations.FilledExtrapolation}, itp, f
     return y, filledextra_const_pb
 end
 
-function ChainRulesCore.rrule(::Type{SVector{N, T}}, x...) where {N, T}
-    y = SVector{N,T}(x...)
-    function svector_const_pb(Δy)
+function ChainRulesCore.rrule(::Type{SArray{D, T, ND, L}}, x...) where {D, T, ND, L}
+    y = SArray{D, T, ND, L}(x...)
+    function sarray_pb(Δy)
         Δy = map(t->eltype(x...)(t...), Δy)
         return NoTangent(), Δy
     end
-    return y, svector_const_pb
-end
-
-function ChainRulesCore.rrule(::Type{SMatrix{N, M, T, K}}, x...) where {N, M, T, K}
-    y = SMatrix{N, M, T, K}(x...)
-    function smat_const_pb(Δy)
-        Δy = map(t->eltype(x...)(t...), Δy)
-        return NoTangent(), Δy
-    end
-    return y, smat_const_pb
+    return y, sarray_pb
 end
 
 function ChainRulesCore.rrule(p::Type{RotMatrix{N, T, L}}, x) where {N, T, L}
