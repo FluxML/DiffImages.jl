@@ -40,7 +40,7 @@ function (h::Homography{K})(x::SVector{3, L}) where {L, K}
 end
 
 function (h::Homography{K})(x::AbstractVector{L}) where {L, K}
-    x = SVector(x...)
+    x = SVector(x...)::SMatrix{3, 3, L, 9}
     return h(x)
 end
 
