@@ -57,14 +57,9 @@ end
     for t in (Float32, Float64, RGB{Float32}, RGB{Float64})
         inp = rand(t, 2)
         inp_mat = rand(t, 3, 3)
-        _sep(x) = x.r + x.g + x.b
-        if t ∈ (Float32, Float64)
-            @test Zygote.gradient(x->sum(SVector{2, t}(x)), inp)[1] == ones(t, 2)
-            @test Zygote.gradient(x->sum(SMatrix{3, 3, t, 9}(x)), inp_mat)[1] == ones(t, 3, 3)
-        else
-            @test Zygote.gradient(x->_sep(sum(SVector{2, t}(x))), inp)[1] == ones(t, 2)
-            @test Zygote.gradient(x->_sep(sum(SMatrix{3, 3, t, 9}(x))), inp_mat)[1] == ones(t, 3, 3)
-        end
+        _abs(c)  = mapreducec(v->abs(float(v)), +, 0, c)
+        @test Zygote.gradient(x->_abs(sum(SVector{2, t}(x))), inp)[1] == ones(t, 2)
+        @test Zygote.gradient(x->_abs(sum(SMatrix{3, 3, t, 9}(x))), inp_mat)[1] == ones(t, 3, 3)
     end
 end
 
