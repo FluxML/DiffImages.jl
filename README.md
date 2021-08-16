@@ -1,5 +1,5 @@
 <p align="center">
-<img width="175px" src="./docs/src/assets/logo.png"/>
+<img width="175px" src="./docs/src/assets/small_logo.png"/>
 <h1 align="center">DiffImages.jl</h1>
 </p>
 
