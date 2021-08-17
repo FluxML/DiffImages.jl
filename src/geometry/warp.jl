@@ -32,18 +32,21 @@ function Homography{T}() where T
     return Homography{T}(SMatrix{3, 3, T, 9}(m))
 end
 
-function (h::Homography{T})(x::SVector{3,K}) where {T,K}
-    y = h.H * x
-    return SVector{2,T}(y[1:2] ./ y[end])
+function (h::Homography{K})(x::SVector{3, L}) where {L, K}
+    hmap = LinearMap(h.H)
+    out = hmap(x)
+    out = out[1:2] / out[3]
+    return SVector{2, K}(out)
 end
 
-function (h::Homography{T})(x::SVector{2,K}) where {T,K}
-    return h(SVector{3,K}(x...,1))
+function (h::Homography{K})(x::AbstractVector{L}) where {L, K}
+    x = SVector(x...)::Union{SVector{2, L}, SVector{3, L}}
+    return h(x)
 end
 
-function Base.inv(h::Homography{T}) where T
-    i = inv(h.H)
-    return Homography{T}(i)
+function (h::Homography{K})(x::SVector{2, L}) where {L, K}
+    x = SVector(x..., one(K))
+    return h(x)
 end
 
 # Fancy way to print the Homography struct
