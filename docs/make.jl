@@ -18,7 +18,9 @@ makedocs(;
         # ],
         "Colorspace Transforms" => "colors/index.md",
         "Geometry modules" => 
-            ["Warp Modules" => "geometry/warp.md"]
+            ["Warp Modules" => "geometry/warp.md"],
+        "Tutorials" => 
+            ["Training a Homography matrix" => "tutorials/warp.md"]
     ],
 )
 
