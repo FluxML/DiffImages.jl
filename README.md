@@ -16,6 +16,8 @@ Currently, we provide support to the following modules:
     - which includes [`ImageTransformations.warp`](https://juliaimages.org/ImageTransformations.jl/stable/reference/#ImageTransformations.warp), with support for transformations from [CoordinateTransformations.jl](https://github.com/JuliaGeometry/CoordinateTransformations.jl).
 - Colorspace modules from [ImageCore.jl](https://github.com/JuliaImages/ImageCore.jl).
 
+You can have a look at the tutorials in the tutorial section in our documentation!
+
 In the future, we aim to extend support to kernels from [ImageFiltering.jl](https://github.com/JuliaImages/ImageFiltering.jl) as well as extend support to image derivatives which are not currently possible due to no implementations for different types of interpolants used in [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl).
 
 This library started off as a Julia Seasons of Code project. It continues to move ahead for being a very interesting, yet unexplored field of research. I am currently maintaining the library. After ticking off some things I had in my mind for implementations, I will welcome more contributions to the library.
