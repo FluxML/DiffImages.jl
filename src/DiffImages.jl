@@ -1,18 +1,14 @@
 module DiffImages
-using Flux,
-      ImageCore,
+using ImageCore,
       Zygote,
-      ChainRules,
       ImageTransformations,
       StaticArrays,
       CoordinateTransformations,
-      ColorVectorSpace,
       Interpolations,
       ChainRulesCore,
       LinearAlgebra, 
       Rotations
 
-using Flux: @functor, unsqueeze
 using Zygote: @adjoint
 using ChainRulesCore: NoTangent
 

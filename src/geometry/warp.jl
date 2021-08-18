@@ -32,7 +32,7 @@ function Homography{T}() where T
     return Homography{T}(SMatrix{3, 3, T, 9}(m))
 end
 
-function (h::Homography{K})(x::SVector{3, L}) where {L, K}
+function (h::Homography{K})(x::SVector{3}) where K
     hmap = LinearMap(h.H)
     out = hmap(x)
     out = out[1:2] / out[3]
@@ -44,7 +44,7 @@ function (h::Homography{K})(x::AbstractVector{L}) where {L, K}
     return h(x)
 end
 
-function (h::Homography{K})(x::SVector{2, L}) where {L, K}
+function (h::Homography{K})(x::SVector{2}) where K
     x = SVector(x..., one(K))
     return h(x)
 end
