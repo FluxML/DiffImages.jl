@@ -20,7 +20,8 @@ makedocs(;
         "Geometry modules" => 
             ["Warp Modules" => "geometry/warp.md"],
         "Tutorials" => 
-            ["Training a Homography matrix" => "tutorials/warp.md"]
+            ["Homography warps" => "tutorials/homog/warp.md",
+             "Rotation transforms" => "tutorials/rotate/rotate.md"]
     ],
 )
 

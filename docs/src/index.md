@@ -19,4 +19,8 @@ Currently, we provide support to the following modules:
 
 In the future, we aim to extend support to kernels from [ImageFiltering.jl](https://github.com/JuliaImages/ImageFiltering.jl) as well as extend support to image derivatives which are not currently possible due to no implementations for different types of interpolants used in [Interpolations.jl](https://github.com/JuliaMath/Interpolations.jl).
 
-Have a look at the [examples](tutorials/warp.md) section of what you can achieve using this library.
+Have a look at the tutorials given below to see what you an do using this package :)
+```@contents
+Pages = ["tutorials/homog/warp.md", "tutorials/rotate/rotate.md"]
+Depth = 2
+```
