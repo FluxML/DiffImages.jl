@@ -1,6 +1,5 @@
 using Test,
       Zygote,
-      Flux,
       DiffImages,
       ImageCore,
       ImageTransformations,
