@@ -9,6 +9,8 @@
 
 DiffImages.jl is a Computer Vision library, which aims to make relavant parts of the [JuliaImages](https://github.com/JuliaImages) ecosystem differentiable. 
 
+![π/6](docs/src/tutorials/rotate/pi_6.gif)
+
 We have started with making parts of [Images.jl](https://github.com/JuliaImages/Images.jl) and [ImageTransformations.jl](https://github.com/JuliaImages/ImageTransformations.jl) differentiable.
 
 Currently, we provide support to the following modules:
