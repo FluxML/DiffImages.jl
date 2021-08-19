@@ -11,7 +11,7 @@ In this example, we will train a homography matrix using DiffImages.jl.
 ### Importing the libraries
 ```@setup homo
 using Pkg
-Pkg.add(["ImageTransformations", "ImageCore", "Zygote", "FileIO"])
+Pkg.add(["ImageTransformations", "ImageCore", "Zygote", "FileIO", "ImageMagick"])
 ```
 ```@repl homo
 using DiffImages, ImageCore, ImageTransformations, FileIO, Zygote
