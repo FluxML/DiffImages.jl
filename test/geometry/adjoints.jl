@@ -53,7 +53,7 @@ end
     end # TODO: Remove the @test_broken after tests work.
 end
 
-@testset "SVector{N, T} and SMatrix{N, N, T, L} gradient" begin
+@testset "SVector and SMatrix gradient" begin
     for t in (Float32, Float64, RGB{Float32}, RGB{Float64})
         inp = rand(t, 2)
         inp_mat = rand(t, 3, 3)

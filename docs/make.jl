@@ -18,7 +18,10 @@ makedocs(;
         # ],
         "Colorspace Transforms" => "colors/index.md",
         "Geometry modules" => 
-            ["Warp Modules" => "geometry/warp.md"]
+            ["Warp Modules" => "geometry/warp.md"],
+        "Tutorials" => 
+            ["Rotation transforms" => "tutorials/rotate/rotate.md",
+            "Homography warps" => "tutorials/homog/warp.md"]
     ],
 )
 
