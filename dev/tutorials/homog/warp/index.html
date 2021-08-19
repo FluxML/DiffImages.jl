@@ -1,6 +1,141 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Homography warps · DiffImages.jl</title><script data-outdated-warner src="../../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../../"><img src="../../../assets/logo.png" alt="DiffImages.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../../">DiffImages.jl</a></span></div><form class="docs-search" action="../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../">Home</a></li><li><a class="tocitem" href="../../../colors/">Colorspace Transforms</a></li><li><span class="tocitem">Geometry modules</span><ul><li><a class="tocitem" href="../../../geometry/warp/">Warp Modules</a></li></ul></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../../rotate/rotate/">Rotation transforms</a></li><li class="is-active"><a class="tocitem" href>Homography warps</a><ul class="internal"><li><a class="tocitem" href="#Homography-warps"><span>Homography warps</span></a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Homography warps</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Homography warps</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/SomTambe/DiffImages.jl/blob/master/docs/src/tutorials/homog/warp.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorials"><a class="docs-heading-anchor" href="#Tutorials">Tutorials</a><a id="Tutorials-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorials" title="Permalink"></a></h1><h2 id="Homography-warps"><a class="docs-heading-anchor" href="#Homography-warps">Homography warps</a><a id="Homography-warps-1"></a><a class="docs-heading-anchor-permalink" href="#Homography-warps" title="Permalink"></a></h2><ul><li><a href="#Tutorials">Tutorials</a></li><ul><li><a href="#Homography-warps">Homography warps</a></li><ul><li><a href="#Importing-the-libraries">Importing the libraries</a></li><li><a href="#Loading-the-images">Loading the images</a></li><li><a href="#Initializing-the-matrix-and-hyperparameters">Initializing the matrix and hyperparameters</a></li><li><a href="#Defining-the-criterion">Defining the criterion</a></li><li><a href="#Defining-the-training-loop">Defining the training loop</a></li><li><a href="#Results">Results</a></li></ul></ul></ul><p>Homography matrices are projective transformations. They can be represented using <code>DiffImages.Homography()</code> in Julia using <code>DiffImages</code>.</p><p>In this example, we will train a homography matrix using DiffImages.jl.</p><h3 id="Importing-the-libraries"><a class="docs-heading-anchor" href="#Importing-the-libraries">Importing the libraries</a><a id="Importing-the-libraries-1"></a><a class="docs-heading-anchor-permalink" href="#Importing-the-libraries" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using DiffImages, ImageCore, ImageTransformations, FileIO, Zygote</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: ArgumentError: Package ImageTransformations not found in current path:
-- Run `import Pkg; Pkg.add(&quot;ImageTransformations&quot;)` to install the ImageTransformations package.</code></pre><h3 id="Loading-the-images"><a class="docs-heading-anchor" href="#Loading-the-images">Loading the images</a><a id="Loading-the-images-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-images" title="Permalink"></a></h3><p>Let us load the images first. We will also convert them to <code>Float32</code> precision type since we do not need such high precision.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; img = load(&quot;source.jpg&quot;) .|&gt; RGB{Float32}</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: load not defined</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; tgt = load(&quot;target.jpg&quot;) .|&gt; RGB{Float32}</code><code class="nohighlight hljs ansi" style="display:block;">ERROR: UndefVarError: load not defined</code></pre><table><tr><th style="text-align: right">Source Image</th><th style="text-align: right">Destination Image</th></tr><tr><td style="text-align: right"><img src="../source.jpg" alt="src"/></td><td style="text-align: right"><img src="../target.jpg" alt="tgt"/></td></tr></table><h3 id="Initializing-the-matrix-and-hyperparameters"><a class="docs-heading-anchor" href="#Initializing-the-matrix-and-hyperparameters">Initializing the matrix and hyperparameters</a><a id="Initializing-the-matrix-and-hyperparameters-1"></a><a class="docs-heading-anchor-permalink" href="#Initializing-the-matrix-and-hyperparameters" title="Permalink"></a></h3><p>Now let us define the homography matrix and other parameters such as the learning rate.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; h = DiffImages.Homography{Float32}()</code><code class="nohighlight hljs ansi" style="display:block;">DiffImages.Homography{Float32} with:
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Homography warps · DiffImages.jl</title><script data-outdated-warner src="../../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.039/juliamono-regular.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.11/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../assets/documenter.js"></script><script src="../../../siteinfo.js"></script><script src="../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href="../../../"><img src="../../../assets/logo.png" alt="DiffImages.jl logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href="../../../">DiffImages.jl</a></span></div><form class="docs-search" action="../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../">Home</a></li><li><a class="tocitem" href="../../../colors/">Colorspace Transforms</a></li><li><span class="tocitem">Geometry modules</span><ul><li><a class="tocitem" href="../../../geometry/warp/">Warp Modules</a></li></ul></li><li><span class="tocitem">Tutorials</span><ul><li><a class="tocitem" href="../../rotate/rotate/">Rotation transforms</a></li><li class="is-active"><a class="tocitem" href>Homography warps</a><ul class="internal"><li><a class="tocitem" href="#Homography-warps"><span>Homography warps</span></a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Tutorials</a></li><li class="is-active"><a href>Homography warps</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Homography warps</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/SomTambe/DiffImages.jl/blob/master/docs/src/tutorials/homog/warp.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorials"><a class="docs-heading-anchor" href="#Tutorials">Tutorials</a><a id="Tutorials-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorials" title="Permalink"></a></h1><h2 id="Homography-warps"><a class="docs-heading-anchor" href="#Homography-warps">Homography warps</a><a id="Homography-warps-1"></a><a class="docs-heading-anchor-permalink" href="#Homography-warps" title="Permalink"></a></h2><ul><li><a href="#Tutorials">Tutorials</a></li><ul><li><a href="#Homography-warps">Homography warps</a></li><ul><li><a href="#Importing-the-libraries">Importing the libraries</a></li><li><a href="#Loading-the-images">Loading the images</a></li><li><a href="#Initializing-the-matrix-and-hyperparameters">Initializing the matrix and hyperparameters</a></li><li><a href="#Defining-the-criterion">Defining the criterion</a></li><li><a href="#Defining-the-training-loop">Defining the training loop</a></li><li><a href="#Results">Results</a></li></ul></ul></ul><p>Homography matrices are projective transformations. They can be represented using <code>DiffImages.Homography()</code> in Julia using <code>DiffImages</code>.</p><p>In this example, we will train a homography matrix using DiffImages.jl.</p><h3 id="Importing-the-libraries"><a class="docs-heading-anchor" href="#Importing-the-libraries">Importing the libraries</a><a id="Importing-the-libraries-1"></a><a class="docs-heading-anchor-permalink" href="#Importing-the-libraries" title="Permalink"></a></h3><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; using DiffImages, ImageCore, ImageTransformations, FileIO, Zygote</code><code class="nohighlight hljs ansi" style="display:block;"></code></pre><h3 id="Loading-the-images"><a class="docs-heading-anchor" href="#Loading-the-images">Loading the images</a><a id="Loading-the-images-1"></a><a class="docs-heading-anchor-permalink" href="#Loading-the-images" title="Permalink"></a></h3><p>Let us load the images first. We will also convert them to <code>Float32</code> precision type since we do not need such high precision.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; img = load(&quot;source.jpg&quot;) .|&gt; RGB{Float32}</code><code class="nohighlight hljs ansi" style="display:block;">Error encountered while load FileIO.File{FileIO.DataFormat{:JPEG}, String}(&quot;source.jpg&quot;).
+
+Fatal error:
+ERROR: ArgumentError: Package ImageMagick [6218d12a-5da1-5696-b52f-db25d2ecc6d1] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+Stacktrace:
+  [1] _require(pkg::Base.PkgId)
+    @ Base ./loading.jl:1012
+  [2] require(uuidkey::Base.PkgId)
+    @ Base ./loading.jl:936
+  [3] #34
+    @ ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:203 [inlined]
+  [4] lock(f::FileIO.var&quot;#34#35&quot;{Base.PkgId}, l::ReentrantLock)
+    @ Base ./lock.jl:187
+  [5] action(::Symbol, ::Vector{Union{Base.PkgId, Module}}, ::FileIO.Formatted; options::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:203
+  [6] action
+    @ ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:197 [inlined]
+  [7] action(::Symbol, ::Vector{Union{Base.PkgId, Module}}, ::Symbol, ::String; options::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:185
+  [8] action
+    @ ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:185 [inlined]
+  [9] load(::String; options::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:113
+ [10] load(::String)
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:110
+ [11] top-level scope
+    @ REPL[1]:1
+ [12] eval
+    @ ./boot.jl:360 [inlined]
+ [13] #20
+    @ ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:668 [inlined]
+ [14] cd(f::Documenter.Expanders.var&quot;#20#22&quot;{Module}, dir::String)
+    @ Base.Filesystem ./file.jl:106
+ [15] (::Documenter.Expanders.var&quot;#19#21&quot;{Documenter.Documents.Page, Module})()
+    @ Documenter.Expanders ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:667
+ [16] (::IOCapture.var&quot;#3#5&quot;{DataType, Documenter.Expanders.var&quot;#19#21&quot;{Documenter.Documents.Page, Module}, Task, IOContext{Base.PipeEndpoint}, IOContext{Base.PipeEndpoint}, Base.PipeEndpoint, Base.PipeEndpoint})()
+    @ IOCapture ~/.julia/packages/IOCapture/sXY71/src/IOCapture.jl:118
+ [17] with_logstate(f::Function, logstate::Any)
+    @ Base.CoreLogging ./logging.jl:491
+ [18] with_logger
+    @ ./logging.jl:603 [inlined]
+ [19] capture(f::Documenter.Expanders.var&quot;#19#21&quot;{Documenter.Documents.Page, Module}; rethrow::Type, color::Bool)
+    @ IOCapture ~/.julia/packages/IOCapture/sXY71/src/IOCapture.jl:116
+ [20] runner(#unused#::Type{Documenter.Expanders.REPLBlocks}, x::Markdown.Code, page::Documenter.Documents.Page, doc::Documenter.Documents.Document)
+    @ Documenter.Expanders ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:666
+ [21] dispatch(::Type{Documenter.Expanders.ExpanderPipeline}, ::Markdown.Code, ::Vararg{Any, N} where N)
+    @ Documenter.Utilities.Selectors ~/.julia/packages/Documenter/R2HVS/src/Utilities/Selectors.jl:170
+ [22] expand(doc::Documenter.Documents.Document)
+    @ Documenter.Expanders ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:42
+ [23] runner(#unused#::Type{Documenter.Builder.ExpandTemplates}, doc::Documenter.Documents.Document)
+    @ Documenter.Builder ~/.julia/packages/Documenter/R2HVS/src/Builder.jl:227
+ [24] dispatch(#unused#::Type{Documenter.Builder.DocumentPipeline}, x::Documenter.Documents.Document)
+    @ Documenter.Utilities.Selectors ~/.julia/packages/Documenter/R2HVS/src/Utilities/Selectors.jl:170
+ [25] #2
+    @ ~/.julia/packages/Documenter/R2HVS/src/Documenter.jl:257 [inlined]
+ [26] cd(f::Documenter.var&quot;#2#3&quot;{Documenter.Documents.Document}, dir::String)
+    @ Base.Filesystem ./file.jl:106
+ [27] #makedocs#1
+    @ ~/.julia/packages/Documenter/R2HVS/src/Documenter.jl:256 [inlined]
+ [28] top-level scope
+    @ ~/work/DiffImages.jl/DiffImages.jl/docs/make.jl:3
+ [29] include(mod::Module, _path::String)
+    @ Base ./Base.jl:386
+ [30] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:285
+ [31] _start()
+    @ Base ./client.jl:485</code><br/><code class="language-julia-repl hljs" style="display:block;">julia&gt; tgt = load(&quot;target.jpg&quot;) .|&gt; RGB{Float32}</code><code class="nohighlight hljs ansi" style="display:block;">Error encountered while load FileIO.File{FileIO.DataFormat{:JPEG}, String}(&quot;target.jpg&quot;).
+
+Fatal error:
+ERROR: ArgumentError: Package ImageMagick [6218d12a-5da1-5696-b52f-db25d2ecc6d1] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+Stacktrace:
+  [1] _require(pkg::Base.PkgId)
+    @ Base ./loading.jl:1012
+  [2] require(uuidkey::Base.PkgId)
+    @ Base ./loading.jl:936
+  [3] #34
+    @ ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:203 [inlined]
+  [4] lock(f::FileIO.var&quot;#34#35&quot;{Base.PkgId}, l::ReentrantLock)
+    @ Base ./lock.jl:187
+  [5] action(::Symbol, ::Vector{Union{Base.PkgId, Module}}, ::FileIO.Formatted; options::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:203
+  [6] action
+    @ ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:197 [inlined]
+  [7] action(::Symbol, ::Vector{Union{Base.PkgId, Module}}, ::Symbol, ::String; options::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:185
+  [8] action
+    @ ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:185 [inlined]
+  [9] load(::String; options::Base.Iterators.Pairs{Union{}, Union{}, Tuple{}, NamedTuple{(), Tuple{}}})
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:113
+ [10] load(::String)
+    @ FileIO ~/.julia/packages/FileIO/JA3Vl/src/loadsave.jl:110
+ [11] top-level scope
+    @ REPL[2]:1
+ [12] eval
+    @ ./boot.jl:360 [inlined]
+ [13] #20
+    @ ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:668 [inlined]
+ [14] cd(f::Documenter.Expanders.var&quot;#20#22&quot;{Module}, dir::String)
+    @ Base.Filesystem ./file.jl:106
+ [15] (::Documenter.Expanders.var&quot;#19#21&quot;{Documenter.Documents.Page, Module})()
+    @ Documenter.Expanders ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:667
+ [16] (::IOCapture.var&quot;#3#5&quot;{DataType, Documenter.Expanders.var&quot;#19#21&quot;{Documenter.Documents.Page, Module}, Task, IOContext{Base.PipeEndpoint}, IOContext{Base.PipeEndpoint}, Base.PipeEndpoint, Base.PipeEndpoint})()
+    @ IOCapture ~/.julia/packages/IOCapture/sXY71/src/IOCapture.jl:118
+ [17] with_logstate(f::Function, logstate::Any)
+    @ Base.CoreLogging ./logging.jl:491
+ [18] with_logger
+    @ ./logging.jl:603 [inlined]
+ [19] capture(f::Documenter.Expanders.var&quot;#19#21&quot;{Documenter.Documents.Page, Module}; rethrow::Type, color::Bool)
+    @ IOCapture ~/.julia/packages/IOCapture/sXY71/src/IOCapture.jl:116
+ [20] runner(#unused#::Type{Documenter.Expanders.REPLBlocks}, x::Markdown.Code, page::Documenter.Documents.Page, doc::Documenter.Documents.Document)
+    @ Documenter.Expanders ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:666
+ [21] dispatch(::Type{Documenter.Expanders.ExpanderPipeline}, ::Markdown.Code, ::Vararg{Any, N} where N)
+    @ Documenter.Utilities.Selectors ~/.julia/packages/Documenter/R2HVS/src/Utilities/Selectors.jl:170
+ [22] expand(doc::Documenter.Documents.Document)
+    @ Documenter.Expanders ~/.julia/packages/Documenter/R2HVS/src/Expanders.jl:42
+ [23] runner(#unused#::Type{Documenter.Builder.ExpandTemplates}, doc::Documenter.Documents.Document)
+    @ Documenter.Builder ~/.julia/packages/Documenter/R2HVS/src/Builder.jl:227
+ [24] dispatch(#unused#::Type{Documenter.Builder.DocumentPipeline}, x::Documenter.Documents.Document)
+    @ Documenter.Utilities.Selectors ~/.julia/packages/Documenter/R2HVS/src/Utilities/Selectors.jl:170
+ [25] #2
+    @ ~/.julia/packages/Documenter/R2HVS/src/Documenter.jl:257 [inlined]
+ [26] cd(f::Documenter.var&quot;#2#3&quot;{Documenter.Documents.Document}, dir::String)
+    @ Base.Filesystem ./file.jl:106
+ [27] #makedocs#1
+    @ ~/.julia/packages/Documenter/R2HVS/src/Documenter.jl:256 [inlined]
+ [28] top-level scope
+    @ ~/work/DiffImages.jl/DiffImages.jl/docs/make.jl:3
+ [29] include(mod::Module, _path::String)
+    @ Base ./Base.jl:386
+ [30] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:285
+ [31] _start()
+    @ Base ./client.jl:485</code></pre><table><tr><th style="text-align: right">Source Image</th><th style="text-align: right">Destination Image</th></tr><tr><td style="text-align: right"><img src="../source.jpg" alt="src"/></td><td style="text-align: right"><img src="../target.jpg" alt="tgt"/></td></tr></table><h3 id="Initializing-the-matrix-and-hyperparameters"><a class="docs-heading-anchor" href="#Initializing-the-matrix-and-hyperparameters">Initializing the matrix and hyperparameters</a><a id="Initializing-the-matrix-and-hyperparameters-1"></a><a class="docs-heading-anchor-permalink" href="#Initializing-the-matrix-and-hyperparameters" title="Permalink"></a></h3><p>Now let us define the homography matrix and other parameters such as the learning rate.</p><pre><code class="language-julia-repl hljs" style="display:block;">julia&gt; h = DiffImages.Homography{Float32}()</code><code class="nohighlight hljs ansi" style="display:block;">DiffImages.Homography{Float32} with:
 3×3 StaticArrays.SMatrix{3, 3, Float32, 9} with indices SOneTo(3)×SOneTo(3):
  1.0  0.0  0.0
  0.0  1.0  0.0
@@ -50,4 +185,4 @@ Iteration: 99 Loss: 7179.936
 Iteration: 100 Loss: 7162.128</code></pre><p>Here, <code>∇H</code> is the gradient of the matrix with respect to the scalar output. It can be represented mathematically to be -</p><p class="math-container">\[∇H = 
 \begin{bmatrix}
 \frac{\partial{L}}{\partial{H_{ij}}}
-\end{bmatrix}\]</p><h3 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h3><p>After training your matrix successfully, you shall get something like this.</p><table><tr><th style="text-align: right"><code>η = 1e-10</code></th><th style="text-align: right"><code>η = 2e-10</code></th></tr><tr><td style="text-align: right"><img src="../warp.gif" alt="homo-gif"/></td><td style="text-align: right"><img src="../warp2.gif" alt="homo-gif2"/></td></tr></table><p>It is apparently difficult to train a homography matrix. Therefore, finding the right hyperparameters is the key to training it correctly.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../rotate/rotate/">« Rotation transforms</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.5 on <span class="colophon-date" title="Thursday 19 August 2021 10:37">Thursday 19 August 2021</span>. Using Julia version 1.6.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+\end{bmatrix}\]</p><h3 id="Results"><a class="docs-heading-anchor" href="#Results">Results</a><a id="Results-1"></a><a class="docs-heading-anchor-permalink" href="#Results" title="Permalink"></a></h3><p>After training your matrix successfully, you shall get something like this.</p><table><tr><th style="text-align: right"><code>η = 1e-10</code></th><th style="text-align: right"><code>η = 2e-10</code></th></tr><tr><td style="text-align: right"><img src="../warp.gif" alt="homo-gif"/></td><td style="text-align: right"><img src="../warp2.gif" alt="homo-gif2"/></td></tr></table><p>It is apparently difficult to train a homography matrix. Therefore, finding the right hyperparameters is the key to training it correctly.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../rotate/rotate/">« Rotation transforms</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.5 on <span class="colophon-date" title="Thursday 19 August 2021 11:04">Thursday 19 August 2021</span>. Using Julia version 1.6.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
