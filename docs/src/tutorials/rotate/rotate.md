@@ -38,7 +38,6 @@ Let us set our target image to angle of `π/6`.
 
 ```@example rot
 tgt = ImageTransformations.warp(img, m(π/6), axes(img), zero(eltype(img)))
-tgt = imresize(tgt, ratio = 1/3)
 ```
 
 ### Setting the hyperparameters
@@ -63,7 +62,7 @@ end
 ### Training loop
 Now that we are ready, let's get to train our matrix. Here we only have a single scalar parameter `θ` for training.
 ```julia
-for i in 1:100
+for i in 1:num_iters
     ∇θ, = Zygote.gradient(θ) do θ
             out = ImageTransformations.warp(img, m(θ), axes(img), zero(eltype(img)))
             out = image_mse(out, tgt)
@@ -75,6 +74,35 @@ for i in 1:100
 
     θ = θ + η*∇θ
 end
+```
+```
+Iteration: 1 Loss: 5878.8823
+Iteration: 2 Loss: 5721.9014
+Iteration: 3 Loss: 5499.8564
+Iteration: 4 Loss: 5248.2817
+Iteration: 5 Loss: 5001.5283
+Iteration: 6 Loss: 4771.129
+Iteration: 7 Loss: 4549.8735
+Iteration: 8 Loss: 4342.372
+Iteration: 9 Loss: 4145.0225
+Iteration: 10 Loss: 3958.0752
+Iteration: 11 Loss: 3778.5156
+Iteration: 12 Loss: 3604.375
+Iteration: 13 Loss: 3432.296
+Iteration: 14 Loss: 3262.7085
+Iteration: 15 Loss: 3099.788
+...
+Iteration: 90 Loss: 648.5401
+Iteration: 91 Loss: 644.355
+Iteration: 92 Loss: 640.3202
+Iteration: 93 Loss: 636.3374
+Iteration: 94 Loss: 632.3824
+Iteration: 95 Loss: 628.35864
+Iteration: 96 Loss: 623.8506
+Iteration: 97 Loss: 619.3939
+Iteration: 98 Loss: 615.4604
+Iteration: 99 Loss: 611.1207
+Iteration: 100 Loss: 606.791
 ```
 
 ### Results
