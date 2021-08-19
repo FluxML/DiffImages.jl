@@ -9,13 +9,17 @@ Homography matrices are projective transformations. They can be represented usin
 
 In this example, we will train a homography matrix using DiffImages.jl.
 ### Importing the libraries
-```@repl 1
+```@setup homo
+using Pkg
+Pkg.add(["ImageTransformations", "ImageCore", "Zygote", "FileIO"])
+```
+```@repl homo
 using DiffImages, ImageCore, ImageTransformations, FileIO, Zygote
 ```
 
 ### Loading the images
 Let us load the images first. We will also convert them to `Float32` precision type since we do not need such high precision.
-```@repl 1
+```@repl homo
 img = load("source.jpg") .|> RGB{Float32}
 tgt = load("target.jpg") .|> RGB{Float32}
 ```
@@ -25,14 +29,14 @@ tgt = load("target.jpg") .|> RGB{Float32}
 
 ### Initializing the matrix and hyperparameters
 Now let us define the homography matrix and other parameters such as the learning rate.
-```@repl 1
+```@repl homo
 h = DiffImages.Homography{Float32}()
 η = 2e-11 # Varies a lot example to example
 num_iters = 100
 ```
 ### Defining the criterion
 Nice! Now before we jump to the training loop, let us first define an `Images`-centric version of the mean squared error loss as our criterion.
-```@repl 1
+```@repl homo
 function image_mse(y, ŷ)
     l = map((x, y) -> (x - y), y, ŷ)
     l = mapreducec.(x->x^2, +, 0, l)
