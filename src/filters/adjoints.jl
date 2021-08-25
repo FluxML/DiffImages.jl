@@ -23,8 +23,6 @@ function ChainRulesCore.rrule(::typeof(imfilter!), out::AbstractArray,
     # imfilter! places a snag because of a try catch block.
     y = imfilter!(out, img, kernel, border, alg)
     function ∇imfilter!_try(Δy)
-        @show typeof(Δy)
-        println("entered first")
         k = default_resource(alg_defaults(alg, out, kernel))
         ret = imfilter!(k, out, img, kernel, border)
         _, ∇ret = rrule_via_ad(Zygote.ZygoteRuleConfig(), imfilter!, k, out, img, kernel, border)
@@ -48,7 +46,6 @@ function ChainRulesCore.rrule(::typeof(__imfilter_inbounds!), r,
         # since it is just being alloted the values
         # after processing. ∇border also should not have 
         # gradients since it does not make sense (for now).
-        @show typeof(Δy)
         ∇out = NoTangent()
         ∇border = NoTangent()
 
