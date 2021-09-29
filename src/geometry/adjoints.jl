@@ -14,6 +14,20 @@ function ChainRulesCore.rrule(::Type{Interpolations.BSplineInterpolation{T, N, T
     return y, bspline_const_pb
 end
 
+function ChainRulesCore.rrule(::Type{Interpolations.ScaledInterpolation{T, N, TA, IT, RN}}, itp, rn) where {T, N, TA, IT, RN}
+    y = Interpolations.ScaledInterpolation{T, N, TA, IT, RN}(itp, rn)
+    function scaledinterp_pb(Δy)
+        @show "here"
+        return NoTangent(), Δy, NoTangent()
+    end
+    return y, scaledinterp_pb
+end
+
+Zygote.@adjoint function Interpolations.ScaledInterpolation{T, N, TA, IT, RN}(itp, rn) where {T, N, TA, IT, RN}
+  Interpolations.ScaledInterpolation{T, N, TA, IT, RN}(itp, rn), Δ -> (Δ, nothing)
+end
+
+
 function ChainRulesCore.rrule(::Type{Interpolations.Extrapolation{T, N, ITPT, IT, ET}}, itp, et::Union{Interpolations.Flat, Interpolations.Reflect, Interpolations.Line}) where {T,N,ITPT,IT,ET}
     y = Interpolations.Extrapolation{T,N,ITPT,IT,ET}(itp, et)
     function extrap_const_pb(Δy)
