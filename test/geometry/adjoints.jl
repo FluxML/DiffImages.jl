@@ -102,16 +102,15 @@ end
 
 @testset "ImageTransformations._getindex gradient" begin
     _sep(x) = x.r + x.g + x.b
-    Base.isapprox(x::Tuple, y::Tuple; kws...) = isapprox(collect(x), collect(y); kws...)
     for t in (Float32, Float64, RGB{Float32}, RGB{Float64})
         itp = extrapolate(interpolate(rand(t, 3, 3), BSpline(Linear())), zero(t))
         for ind in ((2.5, 2.5), (5, 5))
             if t <: Colorant
                 zy = Zygote.gradient((x, y) -> _sep(ImageTransformations._getindex(x, y)), itp, ind)
-                @test isapprox(zy[2], Tuple(_sep.(Interpolations.gradient(itp, ind...))))
+                @test all(zy[2] .≈ Tuple(_sep.(Interpolations.gradient(itp, ind...))))
             else
                 zy = Zygote.gradient((x, y) -> ImageTransformations._getindex(x, y), itp, ind)
-                @test isapprox(zy[2], Tuple(Interpolations.gradient(itp, ind...)))
+                @test all(zy[2] .≈ Tuple(Interpolations.gradient(itp, ind...)))
             end
         end
     end
