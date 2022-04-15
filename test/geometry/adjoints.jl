@@ -107,10 +107,10 @@ end
         for ind in ((2.5, 2.5), (5, 5))
             if t <: Colorant
                 zy = Zygote.gradient((x,y)->_sep(ImageTransformations._getindex(x,y)), itp, ind)
-                @test zy[2] ≈ fieldsum.(Interpolations.gradient(itp, ind...))
+                @test all(zy[2] .≈ Tuple(_sep.(Interpolations.gradient(itp, ind...))))
             else
                 zy = Zygote.gradient((x,y)->ImageTransformations._getindex(x,y), itp, ind)
-                @test zy[2] ≈ Interpolations.gradient(itp, ind...)
+                @test all(zy[2] .≈ Tuple(Interpolations.gradient(itp, ind...)))
             end
         end
     end
