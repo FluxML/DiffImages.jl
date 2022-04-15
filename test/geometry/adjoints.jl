@@ -106,11 +106,19 @@ end
         itp = extrapolate(interpolate(rand(t, 3, 3), BSpline(Linear())), zero(t))
         for ind in ((2.5, 2.5), (5, 5))
             if t <: Colorant
+<<<<<<< HEAD
                 zy = Zygote.gradient((x, y) -> _sep(ImageTransformations._getindex(x, y)), itp, ind)
                 @test all(zy[2] .≈ Tuple(_sep.(Interpolations.gradient(itp, ind...))))
             else
                 zy = Zygote.gradient((x, y) -> ImageTransformations._getindex(x, y), itp, ind)
                 @test all(zy[2] .≈ Tuple(Interpolations.gradient(itp, ind...)))
+=======
+                zy = Zygote.gradient((x,y)->_sep(ImageTransformations._getindex(x,y)), itp, ind)
+                @test zy[2] ≈ fieldsum.(Interpolations.gradient(itp, ind...))
+            else
+                zy = Zygote.gradient((x,y)->ImageTransformations._getindex(x,y), itp, ind)
+                @test zy[2] ≈ Interpolations.gradient(itp, ind...)
+>>>>>>> parent of c4b5ef5 (Fixing errored tests in adjoints.jl)
             end
         end
     end
