@@ -11,7 +11,7 @@ In this tutorial, I will train a Rotation matrix.
 Let us first import the required libraries.
 ```@setup rot
 using Pkg
-Pkg.add(["ImageTransformations", "ImageCore", "Zygote", "CoordinateTransformations", "FileIO", "ImageMagick"])
+Pkg.add(["ImageTransformations", "ImageCore", "Zygote", "CoordinateTransformations", "FileIO"])
 ```
 ```@repl rot
 using DiffImages, ImageTransformations, CoordinateTransformations, ImageCore, FileIO, StaticArrays
