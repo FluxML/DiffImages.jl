@@ -23,14 +23,14 @@
     ds3 = (7, 7, 3, 5)
     ds2 = (7, 7, 2, 5)
     ds1 = (7, 7, 1, 5)
-    
+
     cspaces_with_random = (YIQ,
                            LCHab,
-                           Lab, 
-                           BGRA, ABGR, BGR, 
-                           RGBA, ARGB, RGB, 
-                           HSL, 
-                           AGray, GrayA, Gray, 
+                           Lab,
+                           BGRA, ABGR, BGR,
+                           RGBA, ARGB, RGB,
+                           HSL,
+                           AGray, GrayA, Gray,
                            HSV) # colorspaces those have samplers defined for Base.Random
 
     cspaces_all = (HSV, AHSV, HSVA,
@@ -47,7 +47,7 @@
                DIN99, ADIN99, DIN99A,
                LMS, ALMS, LMSA,
                YIQ, AYIQ, YIQA) # tuple of all of Colorspaces and their transparent variants
-    
+
     cspaces_4 = (BGRA, ABGR,
                  RGBA, ARGB,
                  AHSL, HSLA,
@@ -120,13 +120,13 @@
             for cs in cspaces_with_random
                 i = rand(cs, ds...)
                 if cs ∈ (Gray,)
-                    @test channelview(gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, ds...)
+                    @test channelview(Zygote.gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, ds...)
                 elseif cs ∈ (AGray, GrayA)
-                    @test channelview(gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, 2, ds...)
+                    @test channelview(Zygote.gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, 2, ds...)
                 elseif cs ∈ (BGRA, ABGR, RGBA, ARGB)
-                    @test channelview(gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, 4, ds...)
+                    @test channelview(Zygote.gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, 4, ds...)
                 else
-                    @test channelview(gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, 3, ds...)
+                    @test channelview(Zygote.gradient(x -> sum(channelview(x)), i)[1]) == ones(Float64, 3, ds...)
                 end
             end
         end
@@ -136,16 +136,16 @@
             for cs in cspaces_all
                 if cs ∈ cspaces_4
                     i = rand(ds4[end - 1], ds4[1:end - 2]..., ds4[end])
-                    @test gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
                 elseif cs ∈ (AGray, GrayA)
                     i = rand(ds2[end - 1], ds2[1:end - 2]..., ds2[end])
-                    @test gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
                 elseif cs ∈ (Gray,)
                     i = rand(ds1[1:end - 2]..., ds1[end])
-                    @test gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
                 else
                     i = rand(ds3[end - 1], ds3[1:end - 2]..., ds3[end])
-                    @test gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelview(colorview(cs,x))),i)[1]==ones(size(i))
                 end
             end
         end
@@ -154,13 +154,13 @@
             for cs in cspaces_with_random
                 i = rand(cs, ds...)
                 if cs ∈ (Gray,)
-                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 1, ds[end])
+                    @test channelify(Zygote.gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 1, ds[end])
                 elseif cs ∈ (AGray, GrayA)
-                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 2, ds[end])
+                    @test channelify(Zygote.gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 2, ds[end])
                 elseif cs ∈ (BGRA, ABGR, RGBA, ARGB)
-                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 4, ds[end])
+                    @test channelify(Zygote.gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 4, ds[end])
                 else
-                    @test channelify(gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 3, ds[end])
+                    @test channelify(Zygote.gradient(x -> sum(channelify(x)), i)[1]) == ones(Float64, ds[1:end-1]..., 3, ds[end])
                 end
             end
         end
@@ -169,16 +169,16 @@
             for cs in cspaces_all
                 if cs ∈ cspaces_4
                     i = rand(ds4...)
-                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
                 elseif cs ∈ (AGray, GrayA)
                     i = rand(ds2...)
-                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
                 elseif cs ∈ (Gray,)
                     i = rand(ds1...)
-                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
                 else
                     i = rand(ds3...)
-                    @test gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
+                    @test Zygote.gradient(x->sum(channelify(colorify(cs,x))),i)[1]==ones(size(i))
                 end
             end
         end
