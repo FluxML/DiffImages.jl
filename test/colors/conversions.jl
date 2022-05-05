@@ -23,14 +23,14 @@
     ds3 = (7, 7, 3, 5)
     ds2 = (7, 7, 2, 5)
     ds1 = (7, 7, 1, 5)
-
-    cspaces_with_random = (YIQ,
-                           LCHab,
-                           Lab,
-                           BGRA, ABGR, BGR,
-                           RGBA, ARGB, RGB,
-                           HSL,
-                           AGray, GrayA, Gray,
+    
+    cspaces_with_random = (YIQ,  
+                           LCHab,  
+                           Lab,  
+                           BGRA, ABGR, BGR,  
+                           RGBA, ARGB, RGB,  
+                           HSL,  
+                           AGray, GrayA, Gray,  
                            HSV) # colorspaces those have samplers defined for Base.Random
 
     cspaces_all = (HSV, AHSV, HSVA,
@@ -47,7 +47,7 @@
                DIN99, ADIN99, DIN99A,
                LMS, ALMS, LMSA,
                YIQ, AYIQ, YIQA) # tuple of all of Colorspaces and their transparent variants
-
+    
     cspaces_4 = (BGRA, ABGR,
                  RGBA, ARGB,
                  AHSL, HSLA,

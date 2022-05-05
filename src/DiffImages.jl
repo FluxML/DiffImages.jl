@@ -6,7 +6,7 @@ using ImageCore,
       CoordinateTransformations,
       Interpolations,
       ChainRulesCore,
-      LinearAlgebra,
+      LinearAlgebra,  
       Rotations
 
 using Zygote: @adjoint
