@@ -25,6 +25,7 @@ Interpolations = "0.13.4"
 Rotations = "1.0.2"
 StaticArrays = "1.2"
 Zygote = "0.6.17"
+ImageBase = "0.1.5"
 
 [extras]
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
