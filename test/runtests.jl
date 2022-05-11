@@ -9,7 +9,8 @@ using Test,
       ChainRulesCore,
       CoordinateTransformations,
       Rotations,
-      ImageBase
+      ImageBase,
+      Statistics
 
 @testset "DiffImages" begin
     @info "Testing Colorspace modules"
@@ -27,5 +28,8 @@ using Test,
     @info "Testing ImageBase modules"
     @testset "FiniteDifferences" begin
         include("ImageBase.jl/fdiff.jl")
+    end
+    @testset "Statistics" begin
+        include("ImageBase.jl/statistics.jl")
     end
 end
