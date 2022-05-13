@@ -1,6 +1,3 @@
-using ImageBase
-using ImageBase: varmult
-using Statistics
 @testset "Statistics" begin
   a_fd_1 = [2 4 8; 3 9 27; 4 16 64]
   a_fd_2 = [3 6 9; 6 18 27; 9 27 54; 12 36 81]
