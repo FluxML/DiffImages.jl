@@ -13,7 +13,7 @@ using ImageCore,
 using Zygote: @adjoint
 using ChainRulesCore: NoTangent
 
-export colorify, channelify
+export colorify, channelify, fdiff
 include("colors/conversions.jl")
 include("geometry/warp.jl")
 include("geometry/adjoints.jl")
