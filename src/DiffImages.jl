@@ -7,14 +7,16 @@ using ImageCore,
       Interpolations,
       ChainRulesCore,
       LinearAlgebra, 
-      Rotations
+      Rotations,
+      ImageBase
 
 using Zygote: @adjoint
 using ChainRulesCore: NoTangent
 
-export colorify, channelify
+export colorify, channelify, fdiff
 include("colors/conversions.jl")
 include("geometry/warp.jl")
 include("geometry/adjoints.jl")
+include("ImageBase.jl/fdiff.jl")
 
 end

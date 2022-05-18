@@ -8,7 +8,8 @@ using Test,
       FiniteDifferences,
       ChainRulesCore,
       CoordinateTransformations,
-      Rotations
+      Rotations,
+      ImageBase
 
 @testset "DiffImages" begin
     @info "Testing Colorspace modules"
@@ -22,5 +23,9 @@ using Test,
     end
     @testset "Warps" begin
         include("geometry/warp.jl")
+    end
+    @info "Testing ImageBase modules"
+    @testset "FiniteDifferences" begin
+        include("ImageBase.jl/fdiff.jl")
     end
 end
